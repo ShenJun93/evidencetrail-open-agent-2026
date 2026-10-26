@@ -30,7 +30,11 @@ The project has recorded separate executions involving Zetaris, the official Met
 
 The latest 26 Oct local judge replay passed 580 Python tests, 20 chronology checks, six Edge scenarios and the WHY Evidence Map interaction. It ran on a dirty worktree with `.env.local` and the Meterless vendor checkout present; the runner reports no key-file read or sponsor request, but this is not a clean keyless replay. These are same-machine engineering checks, not independent validation. Analyst impact is unmeasured (n=0).
 
-Historical source availability is not independently proved. Research and planning began before the build window; third-party H-MEM reference code and public government material are disclosed separately. See [the current submission packet](SUBMISSION_PACKET.md), [claim ledger](submission/CLAIM_LEDGER.md), [public-facing README](submission/PUBLIC_README.md), and [local upload manifest](submission/UPLOAD_MANIFEST_20261026.md).
+Historical source availability is not independently proved. Research and planning began before the build window; third-party H-MEM reference code and public government material are disclosed in the source archive.
+
+## Download the reviewed source
+
+The public repository carries the exact 192-file allowlisted source candidate as [a ZIP archive](submission/EvidenceTrail_Track02_SOURCE_REVIEW_20261026.zip). The archive includes the submission packet, public-facing README, claim ledger, tests, and implementation. It excludes local environment files, vendor checkouts, caches, raw receipts, and acceptance logs.
 
 ## Reproduce checks
 
@@ -42,5 +46,5 @@ node demo/verify_proof_register_browser.mjs
 
 The full cold-acceptance runner writes generated files; run it in a disposable checkout. Browser verification currently targets the configured Windows Edge installation. No cross-platform or complete accessibility certification is claimed.
 
-See [LICENSE](LICENSE) and review the disclosed third-party components before redistribution.
+See [LICENSE](LICENSE) and review the disclosed third-party components before redistribution.
 
