@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline' 'self'; script-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'">
+<title>EvidenceTrail — Proof register & limitations</title>
+<style>
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.58 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--bg);border-bottom:1px solid var(--line);padding:18px max(20px,4%);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{font:bold 23px var(--font-display)}.brand span{font:12px system-ui;color:#74817d}
+nav{display:flex;gap:7px;flex-wrap:wrap}nav a{font-size:12px;text-decoration:none;border:1px solid #c5d1cd;padding:9px 13px;border-radius:5px}
+main{max-width:1320px;margin:auto;padding:35px max(20px,4%) 68px}
+.kicker{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:800;color:var(--red)}
+h1{font:normal clamp(34px,4.5vw,62px)/1.08 var(--font-display);letter-spacing:-1px;margin:8px 0 16px}
+h2{font:normal 25px/1.2 var(--font-display);margin:9px 0 16px}
+h3{margin:0 0 9px;font:700 14px system-ui}
+p{margin:8px 0 11px}.intro{max-width:1050px;color:var(--muted);font-size:16px}
+.caution{margin:20px 0 28px;background:#f9e7d3;border-left:4px solid var(--red);padding:13px 18px;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0 25px}
+.stat{background:var(--ink);color:var(--ink-light);border-radius:7px;padding:18px;min-width:0}
+.stat strong{display:block;font:normal 40px var(--font-display);color:#fff}
+.stat span{font-size:11px;text-transform:uppercase;letter-spacing:1px}.stat small{display:block;color:#b3c6c0;font-size:11px;margin-top:9px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.card{background:var(--bg);border:1px solid var(--line);padding:22px;border-radius:6px}
+.card .eyebrow{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:850}
+.card p{font-size:13px}.card ul{padding-left:20px;margin:9px 0}.card li{font-size:13px;margin-bottom:6px}
+.label{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
+.pass{color:var(--green)}.limited{color:var(--red)}
+.note{color:var(--muted);font-size:12px;padding-top:10px;border-top:1px solid var(--line)}
+.section{margin-top:28px}.stack{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.box{background:var(--bg);border:1px solid var(--line);padding:20px 22px;border-radius:6px}
+.box p{font-size:13px;color:var(--muted)}.box p strong{color:var(--ink)}
+.steps{counter-reset:scope;list-style:none;padding:0;display:grid;gap:10px}.steps li{padding:12px 15px;background:#ecf0eb;border-left:3px solid #667e70;font-size:13px}
+code{font:12px/1.5 Consolas,"Courier New",monospace;overflow-wrap:anywhere;word-break:break-word}
+pre{margin:10px 0;padding:11px 13px;background:#243b42;color:#f6f9f4;overflow-x:auto;font-size:12px;border-radius:5px}
+table{border-collapse:collapse;width:100%;font-size:12px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted)}
+a{color:var(--blue)}.meta{font-size:12px;color:var(--muted)}
+footer{font-size:12px;color:var(--muted);margin-top:25px;border-top:1px solid var(--line);padding-top:14px}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.grid,.stack{grid-template-columns:1fr}}
+@media(max-width:440px){.stats{grid-template-columns:1fr}.stat strong{font-size:31px}}
+</style>
+<link rel="stylesheet" href="/ui.css">
+</head>
+<body class="app-page legacy-page proof-page"><a class="skip-link" href="#workspace">Skip to workspace</a>
+<aside class="app-rail" aria-label="EvidenceTrail navigation">
+<a class="app-brand" href="/why"><span class="brand-mark" aria-hidden="true"></span>EvidenceTrail</a>
+<p class="rail-label">Evidence workspace</p><nav class="rail-nav" aria-label="EvidenceTrail views"><a href="/why"><span class="nav-index" aria-hidden="true">01</span>Investigation</a><a href="/demo"><span class="nav-index" aria-hidden="true">02</span>Timeline replay</a><a href="/proof" aria-current="page"><span class="nav-index" aria-hidden="true">03</span>Proof register</a></nav>
+<div class="rail-foot"><span class="local-indicator">Offline sample workspace</span><br>Source-bound. Time-aware.<br>No model calls in this demo.</div></aside>
+
+<main class="app-main" id="workspace"><div class="app-content"><div class="app-topbar"><span>Workspace <span aria-hidden="true">/</span> <strong>Proof register</strong></span><span class="topbar-note">LOCAL REPLAY · NO EXTERNAL CALLS</span></div>
+<div class="kicker">Proof hierarchy / updated 26 October 2026 / no external submission</div>
+<h1>What ran. What did not.</h1>
+<p class="intro">Every status below describes a particular execution and its bounded evidence. One accepted cloud-model response, one local Nightshift adapter response, authenticated LOCAL SQL, offline reproducibility and independent human impact are <strong>different levels</strong>. Do not use one as proof of another.</p>
+<div class="caution"><strong>Demonstration versus sponsor evidence:</strong> All browser views on this server are isolated <strong>OFFLINE SAMPLE</strong> computations. The successful NVIDIA, Zetaris and local Nightshift adapter calls were executed separately on MAIN-PC. Neither the judge's clean checkout nor this browser screen makes a fresh paid/model request. No sponsor prize eligibility has been certified by organizers.</div>
+<div class="stats" aria-label="Evidence levels at last technical acceptance">
+  <div class="stat"><strong>1</strong><span>Accepted real NVIDIA completion</span><small>One separately approved direct Lightning API request</small></div>
+  <div class="stat"><strong>1</strong><span>Local Nightshift adapter completion</span><small>Matched on-machine Runtime route receipt, 25 Oct</small></div>
+  <div class="stat"><strong>2</strong><span>Real Zetaris SELECTs in that run</span><small>4 NOAA/NHC + 3 Florida Governor curated records</small></div>
+  <div class="stat"><strong>580</strong><span>Latest Python acceptance</span><small>26 Oct keyless judge replay; working tree was dirty</small></div>
+  <div class="stat"><strong>0</strong><span>Verified independent human analysts</span><small>8 opt-in pilot packets prepared; no submissions</small></div>
+</div>
+<div class="grid">
+<section class="card">
+<div class="eyebrow">01 / Actual vendor inference, not an injected fixture</div>
+<h2>NVIDIA Nemotron 3.5 Lightning</h2>
+<p class="label pass">One actual accepted HTTPS chat completion</p>
+<p>At <strong>12:29 ICT, 24 Oct 2026</strong>, a separately approved direct NVIDIA request returned <strong>HTTP 200</strong>, one completed assistant response and the exact identity <code>nvidia/nemotron-3.5-lightning-30b-a3b</code>.</p>
+<ul>
+<li>Actual reported usage: <strong>637 prompt + 159 completion = 796 tokens</strong>.</li>
+<li>As-of <strong>2024-10-07 11:00 UTC</strong>, response proposed <strong>100 mph</strong> from NOAA/NHC advisory #8 and <strong>51 Florida counties</strong> from Governor EO #215.</li>
+<li>Both values and pivotal source IDs passed the then-current deterministic SQL selection/citation checker.</li>
+<li>Model response ID SHA-256 prefix: <code>77a261bfcf1a</code>.</li>
+</ul>
+<p class="note"><strong>Important qualification:</strong> the historic accepted status <code>REAL_NVIDIA_RESPONSE_GROUNDED</code> attested structured values and citations only, <em>not</em> every phrase of the model's free-form rationale. The rationale used ambiguous “authenticated” wording. A subsequent offline audit flagged it and the current code quarantines unrestricted model prose. This single API call <strong>predates</strong> the newer generic Claim Ledger and Why? gates. No second inference is claimed.</p>
+<p class="meta">Private ignored receipt on owner PC: <code>acceptance/logs/nvidia-lightning-zetaris-one-shot-20261024.json</code>. Redacted engineering report: <code>notes/99_REAL_NVIDIA_LIGHTNING_ZETARIS_2026-10-24.md</code>.</p>
+</section>
+<section class="card">
+<div class="eyebrow">02 / Genuine local query results, not a live government feed</div>
+<h2>Zetaris Lightning</h2>
+<p class="label pass">Authenticated LOCAL SQL query execution</p>
+<p>Dedicated `EVIDENCETRAIL_MILTON` Lightning data tables hold seven curated government source-reference records: four NOAA/NHC advisories and three Florida Governor records. Two genuine authenticated SQL SELECTs supplied data directly to the <strong>one accepted Nemotron response</strong>.</p>
+<p>Later, the reusable Claim Ledger evaluated <strong>9/9 internally labeled time boundaries</strong> using two fresh local Zetaris queries. The source-withdrawal Why? engine also ran from real SQL and reproduced <strong>7 removal experiments</strong> and <strong>7 policy clock boundaries</strong>.</p>
+<p class="note">These are LOCAL SQL results over curated official-source metadata, <strong>not</strong> authenticated original 2024 NOAA/Florida publisher bytes, independently timestamped first postings, or a live government API stream. Issuer labels alone do not establish statistically independent corroboration.</p>
+<p class="meta">Engineering receipts: <code>notes/99_REAL_NVIDIA_LIGHTNING_ZETARIS_2026-10-24.md</code>, <code>notes/103_CLEAN_460_GENERIC_CLAIM_LEDGER_2026-10-24.md</code>, <code>notes/107_CLEAN_499_AND_WHY_EDGE_REAL_ZETARIS_2026-10-24.md</code>.</p>
+</section>
+<section class="card">
+<div class="eyebrow">03 / Other integration boundaries</div>
+<h2>Meterless, H-MEM & Cursor</h2>
+<p class="label pass">One local Nightshift adapter completion — separate from browser replay</p>
+<ul>
+<li><strong>Meterless H-MEM:</strong> separate actual TypeScript reference-engine add/query, with one prior constrained memory recalled in a subsequent run; <strong>not</strong> a Nightshift model response.</li>
+<li><strong>Nightshift Runtime:</strong> On 25 Oct, an owner-authorized install started a Llama 3.2 1B lane. The EvidenceTrail adapter's <code>meterless/auto</code> chat returned <code>READY</code> and routed model <code>local-runtime/llama-3.2-1b-instruct</code>. Matching local receipt <code>rcpt_req_io484m5c</code> reports <code>local-only</code> and 40 input / 2 output tokens. Earlier Nightshift Web attempts failed; they are separate.</li>
+<li><strong>Cursor:</strong> local project-matched Agent/edit metadata exists for the hackathon window, self-reporting edits. It is <strong>not cryptographic attribution</strong> of every repository change.</li>
+</ul>
+<p class="note">The local adapter reply is not a full browser case verdict, a Nemotron-through-Nightshift call, or organizer certification. The receipt signature field was observed, not independently verified. No sponsor confirmation from organizers has been obtained.</p>
+<p class="meta">See <code>notes/112_NIGHTSHIFT_LOCAL_RUNTIME_APP_PROBE_2026-10-25.md</code> and <code>notes/99_REAL_NVIDIA_LIGHTNING_ZETARIS_2026-10-24.md</code>.</p>
+</section>
+<section class="card">
+<div class="eyebrow">04 / Working product, not independently validated operational advice</div>
+<h2>Claim Ledger & Why?</h2>
+<p class="label pass">Deterministic, source-pinned historical replay</p>
+<p>The source-bound Claim Ledger checks source IDs, publisher, official URL, excerpt digest, typed value and issuer/date policy <strong>before</strong> choosing admissible claims. Florida date-only references are held until a curator-defined end-of-local-day boundary, rather than inventing a publication hour.</p>
+<p>The separate <a href="/why"><strong>Why? counterfactual screen</strong></a> uses the same curated seven-record sample to simulate deleting one source. At 11:00 UTC, deleting Florida EO #215 changes the selected order from <strong>51 to 35 counties</strong>; removing NOAA advisory #8 makes its wind claim abstain. At 15:00 UTC, removing NOAA #10 changes <strong>155 to 125 mph</strong>.</p>
+<p class="note">Simulated deletion is <strong>not a real publisher retraction</strong>. Strict original-publication policy correctly abstains without independent snapshot evidence. Neither this view nor its what-if operations call NVIDIA or Zetaris.</p>
+<p class="meta"><a href="/why">Inspect the live local Why? interface →</a> · <code>notes/106_SOURCE_WITHDRAWAL_WHY_REAL_ZETARIS_2026-10-24.md</code></p>
+</section>
+</div>
+<div class="section box">
+<h2>A second, separate case: 2024 Yagi / Vietnam</h2>
+<p>The original Yagi sample decision notebook used <strong>3 curated government</strong> article/dateline source rows and <strong>1 synthetic</strong> coordinator-capacity record. The government source references and the <strong>FICTIONAL capacity</strong> field are not interchangeable. The local rule can simulate a watch when a district article and fictional capacity pass its checks; it does <strong>not</strong> establish real shelters, actual rescue capability, river conditions, lives saved or authentic first-posting clocks. This Yagi sample and its H-MEM/Zetaris probes are <strong>not</strong> the seven-row Milton + direct Nemotron Lightning one-shot described above.</p>
+<p class="meta"><a href="/demo">Open the Yagi evidence-time demo →</a> · <code>notes/29_ZETARIS_LIVE_TWO_SOURCE_PASS_2026-10-23.md</code> · <code>notes/30_ZETARIS_HMEM_INTEGRATED_LIVE_RUN_2026-10-23.md</code>.</p>
+</div>
+<div class="section stack">
+<section class="box">
+<h2>Reproducibility of this source code</h2>
+<p>The 26 October keyless judge replay passed <strong>580 Python tests</strong>, <strong>20/20 internal chronology</strong>, <strong>6 isolated Edge scenarios</strong>, and the separate WHY Evidence Map browser interaction. This replay ran against a dirty working tree at Git HEAD <code>fff6ab8ca0e86230664560294e5ecd57a51051b0</code>. The runner did not read a key file or authorize external sponsor calls, but it detected an ignored <code>.env.local</code> and vendor checkout; it therefore does <strong>not</strong> claim a clean keyless source checkout or independent evaluation. The results were observed on the same computer, not by an external evaluator.</p>
+<p>Earlier clean-checkout results remain historical: <code>656088d0ee063dfec00eb49dbc72886927c11688</code> passed 510 Python tests, 20 chronology and 6 Edge scenarios; the subsequent core fixes at <code>c1d81ab</code> recorded 524 Python tests. The current Evidence Map visualizes the demo's existing deterministic source-withdrawal output; it is not a confidence score, source-authentication signal, or additional independent test result.</p>
+<p>Production keys, sponsor call receipts and local SQL tables are <strong>not</strong> required to reproduce the offline test suite. The pure engine makes no sponsor calls; the separate live WHY CLI now explicitly reports completed local SQL queries and <code>model_called=false</code>.</p>
+<p class="note">Automated test counts measure expected code behavior against fixtures, not scientific accuracy or independent user benefit.</p>
+</section>
+<section class="box">
+<h2>Human impact & ethics</h2>
+<p><strong>Independent analyst n = 0.</strong> Eight opt-in, counterbalanced participant-only HTML packets are ready for distribution; none has been independently verified as completed by a genuine external volunteer. The reference and assisted conditions show identical seven source cards, while only the assisted condition adds admission markers.</p>
+<p>Anonymous JSON output and local clock timing do <strong>not</strong> independently authenticate a participant. The scoring tool explicitly refuses to turn automation-generated answers into human Impact metrics.</p>
+<p>Study protocol: <code>studies/README.md</code>. No disaster forecast accuracy, lives saved, external statistical impact, or blinded participant outcome is claimed.</p>
+</section>
+</div>
+<div class="section">
+<h2>Reproduce the local judge experience</h2>
+<ol class="steps">
+<li>Run <code>py -3 -c "from evidencetrail.api import serve;serve('127.0.0.1',8765)"</code> from the EvidenceTrail repository. This uses only local sample mode.</li>
+<li>Open <a href="/demo">Yagi timeline</a> to check observed-versus-published chronology, and open <a href="/why">Milton Why?</a> to remove a source and inspect exact claim changes.</li>
+<li>Read this register to distinguish genuine prior local SQL/NVIDIA execution from the <strong>offline browser simulation</strong>. Do not infer vendor API access from a browser screenshot.</li>
+</ol>
+</div>
+<div class="section box">
+<h2>Unresolved prize gates</h2>
+<table>
+<thead><tr><th>Question</th><th>Evidence status</th><th>What would close it</th></tr></thead>
+<tbody>
+<tr><td>Did one genuine NVIDIA completion occur?</td><td class="pass">Yes — accepted exact-model HTTP reply, one dated local receipt</td><td>Preserve original owner-side receipt and validator code; do not forge repeat calls.</td></tr>
+<tr><td>Is Nightshift inference live?</td><td class="pass">Yes, in one local EvidenceTrail adapter probe</td><td>Show the genuine request and receipt in the final video; verify the full case pipeline separately.</td></tr>
+<tr><td>Are the original 2024 source bytes / first postings authenticated?</td><td class="limited">Not for this Milton curated-source case</td><td>Independently verifiable original archive capture evidence; original first posting still distinct.</td></tr>
+<tr><td>Did independent people demonstrate useful impact?</td><td class="limited">No — verified n = 0</td><td>Real volunteers, predeclared scoring, consent and separately attested participation.</td></tr>
+<tr><td>Has the organizer certified sponsor/track eligibility?</td><td class="limited">NOT VERIFIED</td><td>Official organizer ruling and a completed approved submission.</td></tr>
+</tbody>
+</table>
+</div>
+<footer>EvidenceTrail · Research-only incident notebook · Time-bounded, curated-source demonstrations, not live emergency instructions. Local code proof ≠ vendor award proof ≠ human impact. <strong>As-of 26 October 2026.</strong></footer>
+</div></main>
+</body>
+</html>

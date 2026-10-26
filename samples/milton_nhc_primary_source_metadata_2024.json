@@ -1,0 +1,46 @@
+{
+  "kind": "EXTERNAL_PRIMARY_SOURCE_METADATA_V1",
+  "project_is_publisher": false,
+  "source_organization": "NOAA / National Hurricane Center",
+  "event": "Hurricane Milton AL142024",
+  "source_verification": "Official NHC archived public advisories manually inspected on 2026-10-24; displayed issue clocks are not authenticated first-public availability.",
+  "original_2024_first_publication_authenticated": false,
+  "scope": "NON_OPERATIONAL_HISTORICAL_ISSUANCE_CLOCK_STUDY",
+  "index_url": "https://www.nhc.noaa.gov/archive/2024/MILTON.shtml?lv=true",
+  "advisories": [
+    {
+      "id": "NHC-AL142024-PUBLIC-008",
+      "issue_utc": "2024-10-07T09:00:00Z",
+      "wind_mph": 100,
+      "source_url": "https://www.nhc.noaa.gov/archive/2024/al14/al142024.public.008.shtml",
+      "paraphrase": "Milton advisory 8 lists 100 mph maximum sustained wind at 09:00 UTC on Oct 7, 2024; Florida hurricane and storm-surge watches were in effect."
+    },
+    {
+      "id": "NHC-AL142024-PUBLIC-009",
+      "issue_utc": "2024-10-07T12:00:00Z",
+      "wind_mph": 125,
+      "source_url": "https://www.nhc.noaa.gov/archive/2024/al14/al142024.public.009.shtml",
+      "paraphrase": "Milton special advisory 9 lists 125 mph maximum sustained wind at 12:00 UTC on Oct 7, 2024, and expands Mexico watches or warnings."
+    },
+    {
+      "id": "NHC-AL142024-PUBLIC-010",
+      "issue_utc": "2024-10-07T15:00:00Z",
+      "wind_mph": 155,
+      "source_url": "https://www.nhc.noaa.gov/archive/2024/al14/al142024.public.010.shtml",
+      "paraphrase": "Milton advisory 10 lists 155 mph maximum sustained wind at 15:00 UTC on Oct 7, 2024; Lake Okeechobee is added to the hurricane-watch area."
+    },
+    {
+      "id": "NHC-AL142024-PUBLIC-023",
+      "issue_utc": "2024-10-10T21:00:00Z",
+      "wind_mph": 70,
+      "source_url": "https://www.nhc.noaa.gov/archive/2024/al14/al142024.public.023.shtml",
+      "paraphrase": "Final post-tropical Milton advisory 23 lists 70 mph maximum sustained wind at 21:00 UTC Oct 10, 2024 and no coastal watches or warnings in effect."
+    }
+  ],
+  "limitations": [
+    "Curated metadata from publicly reachable 2026 archive pages, not authenticated 2024 page-byte snapshots.",
+    "Selected 4 advisories from a longer official bulletin sequence: absence of an intermediate selected advisory does not establish none was issued.",
+    "Advisory wind numbers are reported storm-level indicators, not real local forecasts, real risk/evacuation orders or measured field outcomes.",
+    "Comparison evaluates issuance-time gating and citation visibility, not prediction accuracy, public-safety efficacy or external user impact."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "1",
+  "mission_id": "yagi-yenbai-2024",
+  "scenario_id": "yagi-replay-alpha",
+  "as_of_utc": "2024-09-08T08:00:00Z",
+  "mode": "REPORTED_DATELINE_REPLAY",
+  "province_2024": "yen bai",
+  "district_2024": "luc yen",
+  "granularity": "district",
+  "question": "At 15:00 ICT on 8 Sep 2024, what public evidence could a Yen Bai coordinator defensibly know for Luc Yen?",
+  "sample_mode": true,
+  "max_retries": 2
+}

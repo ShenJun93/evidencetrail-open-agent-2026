@@ -1,0 +1,11 @@
+{
+  "profile": "product-admin",
+  "sourceRoots": ["demo"],
+  "locale": "en",
+  "canonicalMap": "UX-CONTRACT.md",
+  "requiredCapabilities": ["Select/Listbox", "Date", "Form", "Scrollbar"],
+  "ownership": {"Select/Listbox": "native", "Date": "native"},
+  "requiredCommands": ["e2e"],
+  "commands": {"e2e": "node demo/verify_why_browser.mjs"},
+  "evidence": {"failurePaths": "demo/verify_why_browser.mjs"}
+}

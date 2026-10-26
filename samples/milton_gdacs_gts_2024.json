@@ -1,0 +1,43 @@
+{
+  "kind": "EVIDENCETRAIL_GDACS_GTS_WITNESS_METADATA_V1",
+  "curated_on_utc_date": "2026-10-24",
+  "source_url": "https://gdacs.org/gts.aspx?eventid=1001111&eventtype=TC",
+  "origin_publisher": "NOAA / National Hurricane Center",
+  "relay": "GDACS GTS archive",
+  "authentic_2024_first_web_publication_proven": false,
+  "contemporaneous_immutable_reception_log_proven": false,
+  "timestamps": "GDACS's publicly displayed historical GTS receipt clocks, reviewed in 2026; NOT independently authenticated 2024 capture timestamps.",
+  "rows": [
+    {
+      "source_id": "NHC-AL142024-PUBLIC-008",
+      "gts_received_utc": "2024-10-07T08:59:00Z",
+      "wmo_header": "WTNT34 KNHC 070857",
+      "wind_mph": 100
+    },
+    {
+      "source_id": "NHC-AL142024-PUBLIC-009",
+      "gts_received_utc": "2024-10-07T11:49:00Z",
+      "wmo_header": "WTNT34 KNHC 071147",
+      "wind_mph": 125
+    },
+    {
+      "source_id": "NHC-AL142024-PUBLIC-010",
+      "gts_received_utc": "2024-10-07T14:55:00Z",
+      "wmo_header": "WTNT34 KNHC 071453",
+      "wind_mph": 155
+    },
+    {
+      "source_id": "NHC-AL142024-PUBLIC-023",
+      "gts_received_utc": "2024-10-10T20:36:00Z",
+      "wmo_header": "WTNT34 KNHC 102034",
+      "wind_mph": 70
+    }
+  ],
+  "limitations": [
+    "Independent relay archive, not an additional original issuing authority.",
+    "Historical relay display is retrospectively accessible and not signed or cryptographically timestamped as received in 2024.",
+    "An NHC bulletin valid-at time can be later than the recorded GTS receipt time. Neither proves first-web-posting time.",
+    "All claim values and timestamps are manually curated from currently visible official and GDACS archive pages.",
+    "No operational hurricane guidance, no sponsor or model API call, no measured field impact."
+  ]
+}

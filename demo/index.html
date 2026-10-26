@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>EvidenceTrail — Time is evidence</title>
+<style>
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{border-bottom:1px solid var(--hair);padding:19px clamp(20px,4vw,68px);display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--surface)}
+.brand{font-family:var(--font-display);font-weight:bold;font-size:23px;letter-spacing:-.9px}
+.brand small{font-family:system-ui,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;display:block;color:var(--muted);font-weight:650}
+.topnav{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.topnav a{display:inline-block;padding:7px 12px;border:1px solid #c9d4d0;border-radius:4px;font-size:12px;font-weight:750;text-decoration:none;background:#fff}
+.topnav a:hover,.topnav a:focus-visible{border-color:var(--accent);color:var(--accent)}
+.chip{border:1px solid var(--hair);border-radius:100px;padding:5px 12px;font-size:11px;font-weight:750;letter-spacing:.9px;text-transform:uppercase;color:var(--olive)}
+main{max-width:1490px;margin:auto;padding:clamp(22px,3vw,46px)}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:2px;font-weight:800;color:var(--accent);margin-bottom:9px}
+h1,h2,h3,p{margin:0}h1{font:normal clamp(34px,4.2vw,65px)/1.07 var(--font-display);letter-spacing:-1.7px;max-width:960px}
+.intro{color:var(--muted);margin-top:17px;max-width:835px;font-size:16px}
+.early{display:inline-block;margin-top:18px;padding:8px 12px;background:#e7e8df;border-left:3px solid var(--olive);color:#424f49;font-size:12px}
+.layout{display:grid;grid-template-columns:minmax(245px,315px) minmax(300px,1.1fr) minmax(290px,1fr);align-items:start;gap:18px;margin-top:31px}
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:6px;box-shadow:var(--shadow);overflow:hidden}
+.panelHead{padding:20px 23px;border-bottom:1px solid var(--hair);display:flex;justify-content:space-between;align-items:center}
+.panelHead h2{font:normal 22px var(--font-display)}
+.roman{color:var(--muted);font:italic 15px var(--font-display)}
+.pad{padding:23px}
+label{display:block;margin:16px 0 7px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:800}
+.controls{display:grid;gap:8px}
+button,select,input{font:inherit}
+button{cursor:pointer;text-align:left;min-height:42px;padding:10px 13px;border-radius:4px;border:1px solid var(--hair);background:#fff;color:var(--ink);transition:border-color .14s}
+button:hover,button:focus-visible{border-color:var(--accent);outline:2px solid transparent}
+button.selected{background:#263a3c;color:white;border-color:#263a3c}
+button.primary{background:var(--accent);color:white;border:0;text-align:center;font-weight:750}
+button.secondary{border-color:var(--ink);text-align:center;font-weight:700}
+.lab{margin-top:20px}.labGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.labCard{background:#f5f2e9;border:1px solid var(--hair);padding:18px}.labCard h3{font:normal 22px var(--font-display);margin:4px 0 12px}.labState{font-size:13px;font-weight:800;color:var(--blue);margin-top:8px}.labFoot{margin-top:16px;font-size:12px;color:var(--muted);border-top:1px solid var(--hair);padding-top:12px}
+button:disabled{cursor:progress;opacity:.55}
+select,input{width:100%;padding:10px;border:1px solid var(--hair);border-radius:3px;background:white;color:var(--ink)}
+.help{color:var(--muted);font-size:12px;margin-top:12px}
+.event{border-left:2px solid var(--hair);margin-left:10px;padding:0 0 21px 24px;position:relative}
+.event:before{content:"";position:absolute;left:-6px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--surface);border:2px solid var(--muted)}
+.event:last-child{padding-bottom:2px}
+.clock{font-size:12px;color:var(--accent);font-weight:850;letter-spacing:1px}
+.event strong{display:block;margin:3px 0;font-size:14px}
+.event p{color:var(--muted);font-size:12px}
+.gate{border-top:1px solid var(--hair);padding:18px 23px;background:#f4efe3}
+.gate b{font-size:13px}.gate p{font-size:12px;color:var(--muted);margin-top:4px}
+.state{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--accent)}
+.verdict{font:normal clamp(26px,2.2vw,31px)/1.18 var(--font-display);overflow-wrap:normal;margin:10px 0}
+.subnote{color:var(--muted);font-size:12px}
+.division{height:1px;background:var(--hair);margin:19px 0}
+.whyChanged{background:#e8e9df;border-left:4px solid var(--olive);padding:12px 14px;margin-top:17px;font-size:12px}
+.whyChanged strong{display:block;color:#3f5b3d;font-size:11px;letter-spacing:1px}
+.whyChanged p{margin-top:4px;color:var(--ink);overflow-wrap:anywhere}
+.metricRow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.metric{padding:11px 6px;text-align:center;background:#f1f0e9}
+.metric b{font:normal 22px var(--font-display);display:block}
+.metric span{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.sectionLabel{font-size:11px;text-transform:uppercase;letter-spacing:1.1px;color:var(--muted);font-weight:800;margin:20px 0 8px}
+.entry{padding:10px 0;border-bottom:1px solid var(--hair)}
+.entry:last-child{border:0}
+.entry .id{font-size:12px;overflow-wrap:anywhere;font-weight:750}
+.entry .detail{font-size:12px;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}
+.count{font:italic 13px var(--font-display);color:var(--muted)}
+footer{margin-top:31px;border-top:1px solid var(--hair);padding-top:18px;font-size:12px;color:var(--muted);display:flex;gap:18px;justify-content:space-between;flex-wrap:wrap}
+a{color:var(--blue)}
+@media(max-width:1100px){.layout{grid-template-columns:280px 1fr}.right{grid-column:1/-1}.labGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){header{flex-wrap:wrap}main{padding:20px}.layout{grid-template-columns:1fr}.right{grid-column:auto}.metricRow{gap:3px}.labGrid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<link rel="stylesheet" href="/ui.css">
+</head>
+<body class="app-page legacy-page timeline-page"><a class="skip-link" href="#workspace">Skip to workspace</a>
+<aside class="app-rail" aria-label="EvidenceTrail navigation">
+<a class="app-brand" href="/why"><span class="brand-mark" aria-hidden="true"></span>EvidenceTrail</a>
+<p class="rail-label">Evidence workspace</p><nav class="rail-nav" aria-label="EvidenceTrail views"><a href="/why"><span class="nav-index" aria-hidden="true">01</span>Investigation</a><a href="/demo" aria-current="page"><span class="nav-index" aria-hidden="true">02</span>Timeline replay</a><a href="/proof"><span class="nav-index" aria-hidden="true">03</span>Proof register</a></nav>
+<div class="rail-foot"><span class="local-indicator">Offline sample workspace</span><br>Source-bound. Time-aware.<br>No model calls in this demo.</div></aside>
+
+<main class="app-main" id="workspace"><div class="app-content"><div class="app-topbar"><span>Workspace <span aria-hidden="true">/</span> <strong>Timeline replay</strong></span><span class="topbar-note">LOCAL REPLAY · NO EXTERNAL CALLS</span></div>
+ <section aria-labelledby="headline">
+  <p class="eyebrow">Track 02 / The agent that can explain why</p>
+  <h1 id="headline">At 16:30, a 16:37 article<br>is too late.</h1>
+  <p class="intro">A government article describes river gauges measured at <strong>15:00</strong>. But the article's displayed publication time is <strong>16:37</strong>. Rewind the agent and watch its evidence boundary hold, then advance to see what changes.</p>
+  <p class="early">Research-only, reported-dateline replay. Original 2024 first publication and site-level warnings are not authenticated.</p>
+ </section>
+ <div class="layout">
+  <section class="panel" aria-labelledby="time-heading">
+   <div class="panelHead"><h2 id="time-heading">01 / As-of clock</h2><span class="roman">ICT · UTC+7</span></div>
+   <div class="pad">
+    <p class="count">September 8, 2024 — Yên Bái · Lục Yên</p>
+    <div class="division"></div>
+    <div class="controls">
+     <button class="primary" type="button" id="run">Run actual EvidenceTrail pipeline</button>
+     <button class="secondary" type="button" id="compare">Compare 16:30 → 16:45</button>
+     <button class="secondary" type="button" id="counter">Explain pivotal evidence ↗</button>
+    </div>
+    <p class="help" id="status" aria-live="polite">Ready. Results are computed by POST /run, never hardcoded in this page.</p>
+    <div id="compareBox" class="help" aria-live="polite"></div>
+
+    <label for="when">Decision instant</label>
+    <input id="when" type="datetime-local" value="2024-09-08T16:30" min="2024-09-08T00:00" max="2024-09-09T23:59">
+    <label>Jump to a known boundary</label>
+    <div class="controls" id="presets">
+     <button type="button" data-clock="2024-09-08T15:00">15:00 — before the new reports</button>
+     <button type="button" class="selected" data-clock="2024-09-08T16:30">16:30 — future article blocked</button>
+     <button type="button" data-clock="2024-09-08T16:45">16:45 — new district report enters</button>
+    </div>
+    <label for="mode">Evidence policy</label>
+    <select id="mode">
+     <option value="REPORTED_DATELINE_REPLAY">Reported dateline, edit history unverified</option>
+     <option value="STRICT_AS_OF_2024">Strict original 2024 availability</option>
+    </select>
+    <p class="help">Strict mode requires proof that the exact article bytes were already publicly available in 2024. When that proof is missing, the agent abstains.</p>
+   </div>
+  </section>
+
+  <section class="panel" aria-labelledby="sources-heading">
+   <div class="panelHead"><h2 id="sources-heading">02 / Evidence chronology</h2><span class="roman">Publication ≠ observation</span></div>
+   <div class="pad">
+    <div class="event"><div class="clock">15:00 · observed</div><strong>Gauge measurements taken</strong><p>This is the time of the event, not proof a public source describing it was already accessible.</p></div>
+    <div class="event"><div class="clock">15:30 · published dateline</div><strong>National flood/landslide risk article</strong><p>Government reporting; regional forecast context, not a verified local flood impact.</p></div>
+    <div class="event"><div class="clock">16:21 · published dateline</div><strong>Yên Bái province-level risk article</strong><p>Provincial context cannot automatically prove risk at an individual site.</p></div>
+    <div class="event"><div class="clock">16:37 · published dateline</div><strong>District-named risk + 15:00 observations</strong><p>The story has the earlier gauge data, but cannot be admitted to an earlier as-of clock merely because it describes them.</p></div>
+   </div>
+   <div class="gate"><b id="gateLabel">16:37 article: run pipeline to evaluate</b><p id="gateReason">The local server checks source publication time before any decision.</p></div>
+  </section>
+
+  <section class="panel right" aria-labelledby="verdict-heading">
+   <div class="panelHead"><h2 id="verdict-heading">03 / Decision dossier</h2><span class="roman">Computed, never staged</span></div>
+   <div class="pad">
+    <p class="state" id="label">AWAITING RUN</p>
+    <div class="verdict" id="verdict" aria-live="polite">No result yet</div>
+    <p class="subnote" id="rationale">Select a time and run to inspect the verifiable decision and its limits.</p>
+    <div class="whyChanged" id="whyChanged" hidden><strong>WHY THE RESULT CHANGED</strong><p id="whyDetails"></p></div>
+    <div class="division"></div>
+    <div class="metricRow">
+     <div class="metric"><b id="eligibleCount">–</b><span>Eligible sources</span></div>
+     <div class="metric"><b id="citeCount">–</b><span>Citations</span></div>
+     <div class="metric"><b id="blockedCount">–</b><span>Excluded</span></div>
+    </div>
+    <h3 class="sectionLabel">Admitted source IDs</h3><div id="admitted"><p class="help">Awaiting result</p></div>
+    <h3 class="sectionLabel">Excluded sources and reasons</h3><div id="excluded"><p class="help">Awaiting result</p></div>
+    <h3 class="sectionLabel">Missing facts / limits</h3><div id="missing"><p class="help">Awaiting result</p></div>
+    <h3 class="sectionLabel">Sponsor transport truth</h3><div id="sponsors"><p class="help">Every browser run is SAMPLE_CACHE / UNIT / SKIPPED.</p></div>
+    <p class="help"><a href="/proof">Read separately verified LOCAL Zetaris and H-MEM evidence →</a></p>
+   </div>
+  </section>
+ </div>
+
+ <section class="panel lab" aria-labelledby="counter-heading">
+  <div class="panelHead"><h2 id="counter-heading">04 / Counterfactual Evidence Lab</h2><span class="roman">Computed sensitivity · not causation</span></div>
+  <div class="pad">
+   <p class="help" id="counterStatus" aria-live="polite">Select a decision time and use “Explain pivotal evidence” to run the local rule engine with and without individual sources. No remote model or sponsor network is used for this analysis.</p>
+   <div class="labGrid">
+    <section class="labCard" aria-labelledby="cf-timeline-label">
+     <p class="eyebrow">A / Time travel</p><h3 id="cf-timeline-label">What changed in 15 minutes?</h3>
+     <p id="cfTime" class="labState">Not computed</p><div id="cfNew"></div>
+    </section>
+    <section class="labCard" aria-labelledby="cf-policy-label">
+     <p class="eyebrow">B / Evidence policy</p><h3 id="cf-policy-label">Would strict proof agree?</h3>
+     <p id="cfPolicy" class="labState">Not computed</p><div id="cfPolicyInfo"></div>
+    </section>
+    <section class="labCard" aria-labelledby="cf-ablation-label">
+     <p class="eyebrow">C / Proof of why</p><h3 id="cf-ablation-label">Remove one source</h3>
+     <p id="cfWitness" class="labState">Not computed</p><div id="cfAblations"></div>
+    </section>
+   </div>
+   <h3 class="sectionLabel">Missing information that would improve the decision</h3>
+   <div id="cfRequirements"><p class="help">No counterfactual analysis yet.</p></div>
+   <h3 class="sectionLabel">Next research actions · verification required</h3>
+   <div id="cfActionPlan"><p class="help">Run the Counterfactual Lab for a source-bound evidence plan. No network or field action is performed.</p></div>
+   <p class="labFoot"><strong>Scope:</strong> exactly the bundled sample catalog and production time-filter / deterministic reducer. “Minimal” means minimal under these rules and inputs, including a visibly <strong>FICTIONAL capacity</strong> when present. Historical publication time, flood outcomes, official sponsor inference and rescue actions are NOT established.</p>
+  </div>
+ </section>
+ <section class="panel lab" aria-labelledby="integrity-heading">
+  <div class="panelHead"><h2 id="integrity-heading">05 / Evidence Independence Challenge</h2><span class="roman">Executable source-laundering defence · no model calls</span></div>
+  <div class="pad">
+   <p class="help">Can a copied article with a new ID, a reused URL, or a conflicting fictional plan trick the agent into issuing a simulated watch? Run deliberate data mutations through the same input-integrity gate used by the Collector and Counterfactual Lab.</p>
+   <button class="secondary" type="button" id="integrityLab">Run adversarial source integrity challenge</button>
+   <p class="help" id="integrityStatus" aria-live="polite">Not run. CPU-only bundled data, no sponsor connection.</p>
+   <div class="labGrid" aria-label="Adversarial comparison">
+    <section class="labCard"><p class="eyebrow">A / Without source independence</p><h3>Backdated clone</h3><p class="labState" id="unguardedAttack">Not computed</p><p class="help">Intentionally unsafe control, not an external model.</p></section>
+    <section class="labCard"><p class="eyebrow">B / Protected evidence boundary</p><h3>Trust first</h3><p class="labState" id="protectedAttack">Not computed</p><p class="help">Refuse ambiguous inputs before time/place filtering.</p></section>
+    <section class="labCard"><p class="eyebrow">C / Reproducible checks</p><h3>Measured guardrails</h3><p class="labState" id="integrityScore">Not computed</p><p class="help">Clean controls and provenance/capacity attacks.</p></section>
+   </div>
+   <h3 class="sectionLabel">Attack-by-attack evidence</h3>
+   <div id="integrityCases"><p class="help">Run the local verifier to inspect each refusal.</p></div>
+   <p class="labFoot"><strong>Scope:</strong> adversarial sample records are never real government publications or plans. Passing is not external penetration testing, historical source authentication, or Meterless/NVIDIA inference.</p>
+  </div>
+ </section>
+ <section class="panel lab" aria-labelledby="compare-heading">
+  <div class="panelHead"><h2 id="compare-heading">06 / Transparent baseline challenge</h2>
+    <span class="roman">Our own intentionally unsafe control, not competitor testing</span></div>
+  <div class="pad">
+   <p class="help">Compare the SAME twenty hand-labeled offline chronology cases:
+     this time-aware pipeline versus our intentionally unsafe baseline that
+     ignores publication-time and provenance gates. Neither proves real flood
+     forecast accuracy or measures an outside AI model.</p>
+   <button class="secondary" type="button" id="compareBaseline">Compute 20-case baseline comparison</button>
+   <p class="help" id="compareBaselineStatus" aria-live="polite">Not computed. No external or sponsor API is used.</p>
+   <div id="compareBaselineResult"></div>
+  </div>
+ </section>
+ <section class="panel lab" aria-labelledby="milton-heading">
+  <div class="panelHead"><h2 id="milton-heading">07 / Outside-dataset test: NOAA Milton</h2><span class="roman">External primary-source metadata · curated, not model-generated</span></div>
+  <div class="pad">
+    <p class="help">The same EvidenceTrail source-integrity and publication-time filters now operate on a different disaster, outside the Yagi scenario. This is an audit of <strong>four selected official archived NOAA/NHC advisory issue times</strong>, NOT a reconstructed original 2024 public-access log or a live forecast.</p>
+    <div class="labGrid">
+      <div>
+        <label for="miltonClock">Inspect historical issuance clock (UTC)</label>
+        <select id="miltonClock">
+          <option value="2024-10-07T08:59:00Z">Oct 7 · 08:59 — before advisory 8</option>
+          <option value="2024-10-07T11:00:00Z" selected>Oct 7 · 11:00 — before advisory 9</option>
+          <option value="2024-10-07T14:00:00Z">Oct 7 · 14:00 — before advisory 10</option>
+          <option value="2024-10-07T16:00:00Z">Oct 7 · 16:00 — after advisory 10</option>
+          <option value="2024-10-10T21:00:00Z">Oct 10 · 21:00 — final advisory 23</option>
+        </select>
+      </div>
+      <div>
+        <label for="miltonPolicy">Evidence admissibility policy</label>
+        <select id="miltonPolicy">
+          <option value="reported" selected>Reported official bulletin issue clock</option>
+          <option value="strict">Strict authenticated first availability (unproven)</option>
+        </select>
+      </div>
+      <div>
+        <label>Execute source filter</label>
+        <button id="miltonRun" class="secondary" type="button">Audit NOAA source timeline</button>
+        <p class="help">Only local bundled metadata. No network calls to NOAA or sponsors.</p>
+      </div>
+    </div>
+    <p id="miltonStatus" class="help" aria-live="polite">Not computed; select an issuance clock above.</p>
+    <div class="labGrid">
+      <section class="labCard">
+        <p class="eyebrow">A / Latest selected issued report</p>
+        <h3 id="miltonLatest">Not computed</h3>
+        <p class="help">Wind from the latest available <em>selected</em> advisory, not a prediction by EvidenceTrail.</p>
+      </section>
+      <section class="labCard">
+        <p class="eyebrow">B / Unsafe time-blind comparison</p>
+        <h3 id="miltonUnsafe">Not computed</h3>
+        <p class="help">Maximum across all four selected advisories, including later records. Deliberately invalid as-of comparison.</p>
+      </section>
+      <section class="labCard">
+        <p class="eyebrow">C / Evidence status</p>
+        <h3 id="miltonCount">Not computed</h3>
+        <p class="help">Selected sources passing the publication clock; strict mode abstains without first-availability proof.</p>
+      </section>
+    </div>
+    <h3 class="sectionLabel">Selected official NHC references</h3>
+    <div id="miltonAdmitted"><p class="help">No selected advisory list yet.</p></div>
+    <h3 class="sectionLabel">Withheld future / unproven sources</h3>
+    <div id="miltonExcluded"><p class="help">No exclusion analysis yet.</p></div>
+    <p class="labFoot"><strong>Integrity notice:</strong> facts and issue times were manually checked against official <a href="https://www.nhc.noaa.gov/archive/2024/MILTON.shtml?lv=true" rel="noopener noreferrer" target="_blank">NOAA/NHC advisory archive</a>. This replay uses only advisories 8, 9, 10 and 23 from a longer sequence. It does not certify original page availability, storm forecast accuracy, external analyst impact, or a Nightshift model call.</p>
+  </div>
+ </section>
+ <section class="panel lab" aria-labelledby="cross-heading">
+  <div class="panelHead"><h2 id="cross-heading">08 / Cross-Issuer Evidence Audit</h2><span class="roman">Two original issuing authorities · date precision · no double-counting</span></div>
+  <div class="pad">
+   <p class="help">Compare a NOAA/NHC hourly advisory against Florida Governor emergency orders reported by calendar <em>day only</em>. Florida's FDEM ICYMI republication is a copy of Governor news, not an independent third source. This offline demonstration is not an operational hurricane alert.</p>
+   <div class="labGrid">
+    <div><label for="crossClock">As-of (UTC)</label>
+     <select id="crossClock">
+      <option value="2024-10-06T03:00:00Z">Oct 6 03:00 · October 5 date not yet complete EDT</option>
+      <option value="2024-10-06T04:00:00Z">Oct 6 04:00 · 35-count order admitted</option>
+      <option value="2024-10-07T03:59:00Z">Oct 7 03:59 · 51-count order not yet admitted</option>
+      <option value="2024-10-07T04:00:00Z">Oct 7 04:00 · 51-count order admitted</option>
+      <option value="2024-10-07T11:00:00Z" selected>Oct 7 11:00 · NOAA 100 mph and Florida 51 counties</option>
+      <option value="2024-10-07T15:30:00Z">Oct 7 15:30 · Governor 11am report still date-only</option>
+      <option value="2024-10-08T04:00:00Z">Oct 8 04:00 · Governor Oct 7 reporting date complete</option>
+     </select></div>
+    <div><label for="crossPolicy">Original 2024 availability standard</label>
+     <select id="crossPolicy">
+      <option value="reported" selected>Reported source clocks + conservative date bounds</option>
+      <option value="strict">Strict authenticated first-publication (unproven)</option>
+     </select></div>
+    <div><label>Execute comparison</label>
+     <button id="crossRun" type="button" class="secondary">Compare two issuing authorities</button>
+     <p class="help">Deterministic curated metadata, no outbound network or model requests.</p></div>
+   </div>
+   <p class="help" id="crossStatus" aria-live="polite">Not run. Florida dates lack exact first-posting times.</p>
+   <div class="labGrid">
+    <section class="labCard"><p class="eyebrow">NOAA/NHC report</p><h3 id="crossWind">Not computed</h3><p class="help">Latest admitted selected wind bulletin, not a generated forecast.</p></section>
+    <section class="labCard"><p class="eyebrow">Florida Governor executive order</p><h3 id="crossCounties">Not computed</h3><p class="help">Counties named in the latest conservatively admitted order.</p></section>
+    <section class="labCard"><p class="eyebrow">Independent original issuer families</p><h3 id="crossIssuers">Not computed</h3><p class="help">Florida Disaster repost does not add a third origin.</p></section>
+   </div>
+   <h3 class="sectionLabel">Eligible Florida sources</h3>
+   <div id="crossAdmitted"><p class="help">No audit computed yet.</p></div>
+   <h3 class="sectionLabel">Withheld Florida date-only sources</h3>
+   <div id="crossWithheld"><p class="help">No exclusion analysis yet.</p></div>
+   <p class="labFoot" id="crossBaseline">Time-blind comparison has not run.</p>
+   <p class="labFoot"><strong>Source boundary:</strong> <a href="https://www.nhc.noaa.gov/archive/2024/MILTON.shtml" target="_blank" rel="noopener noreferrer">NOAA/NHC</a> and <a href="https://www.flgov.com/eog/news/press/2024/memorandum-executive-order-number-24-215-emergency-management-amending-executive" target="_blank" rel="noopener noreferrer">Florida Executive Order 24-215</a>. The <a href="https://www.floridadisaster.org/news-media/news/2024107/" target="_blank" rel="noopener noreferrer">Florida Disaster ICYMI</a> is explicitly a republication. A conservative end-of-date threshold does NOT prove the original page was publicly available that day.</p>
+  </div>
+ </section>
+ <footer><span>EvidenceTrail · Local demonstration only · No real-time emergency use · No claims of lives saved</span><span>Government publication URLs and test commands: <a href="https://baochinhphu.vn/" rel="noopener noreferrer" target="_blank">Báo Chính phủ</a> · JUDGE_START_HERE.md</span></footer>
+</div></main>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const presets=[...document.querySelectorAll("[data-clock]")];
+let lastResult=null;
+function setClock(value){$("when").value=value;presets.forEach(b=>{const active=b.dataset.clock===value;b.classList.toggle("selected",active);b.setAttribute("aria-pressed",String(active));});}
+presets.forEach(b=>b.addEventListener("click",()=>setClock(b.dataset.clock)));
+$("when").addEventListener("change",()=>setClock($("when").value));
+function text(id,value){$(id).textContent=String(value);}
+function entry(parent,title,detail){
+ const el=document.createElement("div");el.className="entry";
+ const first=document.createElement("div");first.className="id";first.textContent=title;el.appendChild(first);
+ if(detail){const sub=document.createElement("div");sub.className="detail";sub.textContent=detail;el.appendChild(sub);}
+ parent.appendChild(el);
+}
+function entries(id,data,render){const node=$(id);node.replaceChildren();if(!data.length){entry(node,"None reported","");return;}data.forEach(x=>render(node,x));}
+function buildRequest(localTime){
+ const utc=new Date(localTime+":00+07:00");
+ if(Number.isNaN(utc.getTime()))throw Error("Please choose a valid Vietnam-local clock.");
+ return {schema_version:"1",mission_id:"yagi-yenbai-2024",scenario_id:"yagi-replay-alpha",as_of_utc:utc.toISOString(),
+ mode:$("mode").value,province_2024:"yen bai",district_2024:"luc yen",granularity:"district",sample_mode:true,
+ question:"For a fictional coordinator, what is supported at this historical as-of?",max_retries:2};
+}
+async function execute(localTime){
+ const response=await fetch("/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(buildRequest(localTime)),cache:"no-store"});
+ const body=await response.json();
+ if(!response.ok)throw Error(body.error||"Pipeline request failed");
+ if(body.sample_mode!==true)throw Error("Refusing a response not explicitly marked sample");
+ return body;
+}
+function render(result,clock){
+ lastResult=result;
+ text("label","COMPUTED / "+$("mode").value.replaceAll("_"," ")+" / OFFLINE SAMPLE");
+ text("verdict",result.verdict.replaceAll("_"," "));
+ $("verdict").dataset.code=result.verdict;
+ $("whyChanged").hidden=true;
+ text("rationale",result.rationale||"No rationale supplied");
+ text("eligibleCount",(result.eligible_source_ids||[]).length);
+ text("citeCount",(result.citations||[]).length);
+ text("blockedCount",(result.excluded||[]).length);
+ entries("admitted",result.eligible_source_ids||[],(n,id)=>entry(n,id,(result.citations||[]).some(c=>c.source_id===id)?"Verified source-hash citation":"Source admitted, not a decisive citation"));
+ entries("excluded",result.excluded||[],(n,x)=>entry(n,x.source_id,x.reason+(x.advisories?.length?" · "+x.advisories.join(", "):"")));
+ entries("missing",result.missing_facts||[],(n,s)=>entry(n,s,""));
+ entries("sponsors",result.sponsor_calls||[],(n,c)=>entry(n,c.provider+" / "+c.engine,c.outcome+" — "+(c.contract_label||"NO_LIVE_RECEIPT")));
+ const allowed=(result.eligible_source_ids||[]).includes("GOV-2024-09-08-1637");
+ const excluded=(result.excluded||[]).find(x=>x.source_id==="GOV-2024-09-08-1637");
+ text("gateLabel","16:37 source: "+(allowed?"ADMITTED":"WITHHELD"));
+ text("gateReason",allowed?"Admitted by the application's as-of gate in reported-dateline mode; original article edit history is not authenticated.":(excluded?.reason||"The 16:37 article did not enter the decision"));
+ text("status","Pipeline executed at "+clock.replace("T"," ")+" ICT · "+(result.agents||[]).join(" → ")+".");
+}
+async function executeCounterfactual(localTime){
+ const payload=buildRequest(localTime);
+ payload.earlier_by_minutes=15;
+ const response=await fetch("/counterfactual",{
+  method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify(payload),cache:"no-store"
+ });
+ const body=await response.json();
+ if(!response.ok)throw Error(body.error||"Counterfactual request failed");
+ if(body.offline_sample_only!==true ||
+    body.kind!=="OFFLINE_DETERMINISTIC_COUNTERFACTUAL_DOSSIER_V1"){
+  throw Error("Refusing a result without an explicit offline counterfactual contract");
+ }
+ return body;
+}
+function renderCounterfactual(report,pipeline){
+ const current=report.current;
+ const consistent=(pipeline.verdict===current.rule_verdict);
+ text("counterStatus",consistent
+  ? "PASS — deterministic replay agrees with the computed offline pipeline verdict. No new sponsor/model call."
+  : "CAUTION — deterministic rule and the full pipeline disagree; do NOT treat this as a certified decision.");
+ const earlier=report.earlier_same_policy;
+ text("cfTime",earlier.rule_verdict.replaceAll("_"," ")+" → "+current.rule_verdict.replaceAll("_"," "));
+ entries("cfNew",report.newly_eligible_source_ids||[],
+  (node,id)=>entry(node,id,"Newly admitted by the source-time filter, not proof of first publication"));
+ const alternate=report.same_clock_other_policy;
+ text("cfPolicy",current.policy.replaceAll("_"," ")+" → "+alternate.policy.replaceAll("_"," "));
+ entries("cfPolicyInfo",[{
+  title:"Other policy: "+alternate.rule_verdict.replaceAll("_"," "),
+  detail:(report.policy_changed_rule_verdict?"Verdict differs;":"Same rule verdict;")+" strict archive proof is not auto-promoted into the sample catalog."
+ }],(node,x)=>entry(node,x.title,x.detail));
+ const witnessed=current.minimum_sufficient_source_set||[];
+ text("cfWitness",current.minimum_set_proven
+  ? "Exact minimum set: "+witnessed.length+" inputs"
+  : "No sufficient WARN set at this clock");
+ entries("cfAblations",current.source_removal_tests||[],
+  (node,x)=>entry(node,x.source_id+(x.changes_rule_verdict?" · PIVOTAL":" · not pivotal"),
+   "Without source: "+x.without_source_rule_verdict.replaceAll("_"," ") +
+   (x.synthetic_scenario?" · FICTIONAL scenario capacity":" · government dateline")));
+ entries("cfRequirements",current.next_evidence_requirements||[],
+  (node,x)=>entry(node,x.code.replaceAll("_"," "),
+   x.action+(x.blocks_research_watch?" · blocks even simulated watch":" · blocks real operational use")));
+ const plan=current.research_action_plan;
+ if(!plan || plan.kind!=="OFFLINE_HUMAN_REVIEW_RESEARCH_PLAN_V1"
+    || plan.model_or_vendor_called!==false || plan.new_evidence_collected!==false){
+  text("cfActionPlan","No verifiable offline research plan supplied.");
+ }else{
+  entries("cfActionPlan",(plan.next_evidence_steps||[]).slice(0,9),
+    (node,action)=>entry(node,action.priority+" · "+action.code.replaceAll("_"," "),
+    action.action+" VERIFY: "+action.verification_criterion+
+    " · Human review required; no automatic collection."));
+ }
+ if(current.minimum_set_proven){
+  const holder=$("cfAblations");
+  entry(holder,"MINIMUM SUFFICIENT INPUTS: "+witnessed.map(x=>x.source_id).join(" + "),
+    "A bounded exhaustive subset check, NOT independent validation of an actual 2024 hazard.");
+ }
+}
+function busy(flag){$("run").disabled=flag;$("compare").disabled=flag;$("counter").disabled=flag;}
+$("counter").addEventListener("click",async()=>{
+ busy(true);text("counterStatus","Recomputing full sample pipeline and all leave-one-out source removals...");
+ try{
+  const clock=$("when").value;
+  const [result,report]=await Promise.all([execute(clock),executeCounterfactual(clock)]);
+  render(result,clock);
+  renderCounterfactual(report,result);
+ }catch(e){text("counterStatus","Counterfactual analysis failed: "+e.message);}
+ finally{busy(false);}
+});
+
+$("run").addEventListener("click",async()=>{busy(true);text("status","Running local evidence and citation checks...");try{const clock=$("when").value;render(await execute(clock),clock);text("compareBox","");}catch(e){text("status","Request failed: "+e.message);}finally{busy(false);}});
+$("compare").addEventListener("click",async()=>{busy(true);text("status","Recomputing two independent as-of cases...");try{
+ const first=await execute("2024-09-08T16:30");
+ const second=await execute("2024-09-08T16:45");
+ const before=new Set(first.eligible_source_ids||[]);
+ const added=(second.eligible_source_ids||[]).filter(id=>!before.has(id));
+ text("compareBox","16:30 "+first.verdict+" → 16:45 "+second.verdict+"; newly admitted source IDs: "+(added.join(", ")||"none")+". Both are computed SAMPLE results.");
+ setClock("2024-09-08T16:45");render(second,"2024-09-08T16:45");
+ text("whyDetails","16:30: "+first.verdict.replaceAll("_"," ")+" → 16:45: "+second.verdict.replaceAll("_"," ")+". Newly admissible: "+(added.join(", ")||"none")+". Source admission uses displayed publication time, not the earlier observation time.");
+ $("whyChanged").hidden=false;
+}catch(e){text("status","Comparison failed: "+e.message);}finally{busy(false);}});
+$("integrityLab").addEventListener("click",async()=>{
+ $("integrityLab").disabled=true;
+ text("integrityStatus","Replaying alias, capacity-conflict and clean-control cases...");
+ try{
+  const response=await fetch("/integrity",{cache:"no-store"});
+  const data=await response.json();
+  if(!response.ok||data.kind!=="EVIDENCETRAIL_OFFLINE_SOURCE_INDEPENDENCE_CHALLENGE_V1"
+    ||data.offline_sample_only!==true||data.real_vendor_model_called!==false
+    ||data.unguarded_clone_is_external_competitor!==false
+    ||data.sponsor_eligibility_certified!==false
+    ||data.case_count!==(data.cases||[]).length){
+   throw Error("Evidence-independence contract unverified");
+  }
+  text("unguardedAttack",data.unguarded_backdated_url_clone_rule_verdict+" · unsafe control");
+  const rejected=(data.cases||[]).find(x=>x.challenge==="Independent-ID laundering through one URL");
+  text("protectedAttack",rejected?.observed_boundary||"No verified defence");
+  text("integrityScore",data.passed_count+"/"+data.case_count+
+    (data.all_cases_pass?" checks PASS":" checks need review"));
+  text("integrityStatus",data.all_cases_pass
+    ? "PASS — all local source admission checks passed; not external attack testing."
+    : "CAUTION — some source checks failed; do not claim a robust source chain.");
+  entries("integrityCases",data.cases||[],(node,x)=>entry(node,
+    (x.passed?"PASS":"FAIL")+" · "+x.challenge,
+    "Observed: "+x.observed_boundary+" · Expected: "+x.expected_boundary+
+    (x.attempted_source_manipulation?" · adversarial mutation":" · clean control")));
+ }catch(e){text("integrityStatus","Challenge failed: "+e.message);text("integrityScore","UNVERIFIED");}
+ finally{$("integrityLab").disabled=false;}
+});
+$("compareBaseline").addEventListener("click",async()=>{
+ $("compareBaseline").disabled=true;
+ text("compareBaselineStatus","Computing twenty CPU-only policy cases...");
+ try{
+  const response=await fetch("/comparison",{cache:"no-store"});
+  const data=await response.json();
+  if(!response.ok||data.kind!=="EVIDENCETRAIL_OFFLINE_INTERNAL_BASELINE_COMPARISON_V1"
+    ||data.sample_only!==true||data.baseline_is_rival_product_or_external_llm!==false
+    ||data.model_vendor_or_paid_api_called!==false||data.case_count!==20
+    ||data.all_evidencetrail_policy_checks_pass!==true){
+   throw Error("Offline baseline comparison contract not satisfied");
+  }
+  text("compareBaselineStatus","PASS — evaluated existing 20 policy-gold fixtures; NOT an external agent or real-world forecast benchmark.");
+  entries("compareBaselineResult",[
+    {label:"EvidenceTrail",value:data.evidencetrail_policy_gold_passes+"/20 local policy matches"},
+    {label:"OUR time-blind control",value:data.own_weak_control_policy_gold_passes+"/20 local policy matches"},
+    {label:"Unsafe baseline false warnings",value:data.own_weak_control_false_warn_cases+" gold-ABSTAIN cases"},
+    {label:"Research action explanation checks",value:data.additional_plan_gold_passes+"/3 local fixtures"}
+  ],(node,item)=>entry(node,item.label,item.value));
+ }catch(e){text("compareBaselineStatus","Comparison unavailable: "+e.message);}
+ finally{$("compareBaseline").disabled=false;}
+});
+$("miltonRun").addEventListener("click",async()=>{
+ $("miltonRun").disabled=true;
+ text("miltonStatus","Checking NOAA selected bulletin clocks through the production EvidenceTrail firewall...");
+ try{
+  const response=await fetch("/external-milton",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      as_of_utc:$("miltonClock").value,
+      strict:$("miltonPolicy").value==="strict"
+    }),cache:"no-store"
+  });
+  const data=await response.json();
+  if(!response.ok||data.kind!=="EVIDENCETRAIL_NOAA_MILTON_EXTERNAL_EVIDENCE_REPLAY_V1"
+     ||data.model_or_sponsor_called!==false
+     ||data.published_first_availability_authenticated!==false
+     ||data.production_source_integrity_and_firewall_used!==true
+     ||data.sample_bulletin_selection_is_not_full_nhc_archive!==true){
+    throw Error("Independent NOAA evidence contract not satisfied");
+  }
+  text("miltonLatest",data.latest_selected_reported_wind_mph===null
+    ? "None admissible"
+    : data.latest_selected_reported_wind_mph+" mph");
+  text("miltonUnsafe",data.unsafe_full_archive_peak_mph+" mph (time-blind)");
+  text("miltonCount",data.source_ids_selected.length+" of 4 selected");
+  text("miltonStatus",data.result.replaceAll("_"," ")+
+       " · "+data.policy.replaceAll("_"," ")+" · source admission, not hazard forecasting.");
+  entries("miltonAdmitted",data.source_refs_selected||[],(node,x)=>entry(node,
+      x.id+" · "+x.reported_maximum_sustained_wind_mph+" mph",
+      "Reported issue: "+x.displayed_issue_utc+" · Official reference: "+x.url));
+  entries("miltonExcluded",data.excluded||[],(node,x)=>entry(node,
+      x.source_id,x.reason.replaceAll("_"," ")));
+  if(data.integrity_issues?.length){
+    text("miltonStatus","REFUSED: Source integrity conflict. "+data.integrity_issues.map(x=>x.code).join(", "));
+  }
+ }catch(e){
+  text("miltonStatus","NOAA cross-event replay failed: "+e.message);
+  text("miltonLatest","Unverified");
+ }finally{$("miltonRun").disabled=false;}
+});
+$("crossRun").addEventListener("click",async()=>{
+ $("crossRun").disabled=true;
+ text("crossStatus","Checking claimed issuer family, exact NHC clocks and conservative Florida date bounds...");
+ try{
+  const res=await fetch("/cross-issuer",{method:"POST",cache:"no-store",
+    headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      as_of_utc:$("crossClock").value,strict:$("crossPolicy").value==="strict"
+    })});
+  const data=await res.json();
+  if(!res.ok||data.kind!=="EVIDENCETRAIL_CROSS_ISSUER_MILTON_V1"
+     ||data.sponsor_calls_performed!==false||data.original_2024_first_publication_authenticated!==false
+     ||data.florida_republication?.adds_independent_corroboration!==false
+     ||data.source_selection_from_production_integrity_and_nhc_firewall!==true
+     ||data.date_precision_firewall_is_new_explicit_policy!==true
+     ||data.independent_issuer_families_in_corpus!==2
+     ||data.refused||data.integrity_issues?.length){
+    throw Error("Cross-issuer evidence origin and date policy not certified");
+  }
+  text("crossWind",data.latest_nhc_selected_wind_mph===null?"No eligible report":
+      data.latest_nhc_selected_wind_mph+" mph");
+  text("crossCounties",data.florida_counties_under_emergency_in_selected_order===null?
+    "No eligible order":data.florida_counties_under_emergency_in_selected_order+" counties");
+  text("crossIssuers",data.source_family_count+" / 2");
+  const adm=data.florida_admitted||[],out=data.florida_excluded||[];
+  entries("crossAdmitted",adm,(node,x)=>entry(node,x.id+" · "+x.value+" (claim unit depends on type)",
+    "Reported local date "+x.displayed_local_date+
+    " · conservative evidence boundary "+x.conservative_safe_after_utc+
+    " · official original "+x.url));
+  entries("crossWithheld",out,(node,x)=>entry(node,x.id+" · "+x.reason.replaceAll("_"," "),
+    "Printed date "+x.displayed_local_date+
+    " · not admitted before "+x.conservative_safe_after_utc));
+  text("crossBaseline","Deliberately invalid time-blind baseline includes "+
+    data.baseline_time_blind_sources_considered+" selected documents; "+
+    data.baseline_future_source_count+
+    " have issue times or conservative date-bounds later than your chosen as-of. "+
+    "This is not an external competitor or user-impact study.");
+  text("crossStatus",data.policy.replaceAll("_"," ")+
+    " · FDEM republication is not a third issuing family; source trace is hand-curated.");
+ }catch(e){
+  text("crossStatus","Cross-issuer audit failed: "+e.message);
+  text("crossWind","UNVERIFIED");
+  text("crossCounties","UNVERIFIED");
+  text("crossIssuers","UNVERIFIED");
+ }finally{$("crossRun").disabled=false;}
+});
+setClock($("when").value);
+</script>
+</body></html>

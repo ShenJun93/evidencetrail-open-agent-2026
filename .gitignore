@@ -1,0 +1,30 @@
+.env
+.env.local
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+hmem_data/
+.remember/
+# Generated offline judge traces can contain request details; regenerate locally.
+acceptance/logs/
+# Local Zetaris configuration/live preflight receipts are not contest sponsor attestations.
+acceptance/zetaris-config-preflight.json
+acceptance/zetaris-live-contract-receipt.json
+# Read-only local Docker/WSL readiness: host-specific evidence, not sponsor API proof.
+acceptance/zetaris-local-readiness.json
+# Sanitized but machine-specific Docker status/volume health preflight.
+acceptance/zetaris-recovery-inspection.json
+# Existing-container service starts are local-only and not sponsor evidence.
+acceptance/zetaris-recovery-attempt.json
+logs/trace-*.jsonl
+logs/run-*.json
+logs/*.tmp
+vendor/meterless/
+*.egg-info/
+dist/
+build/
+.DS_Store
+Thumbs.db

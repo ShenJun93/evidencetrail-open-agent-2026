@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; img-src data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Evidence chronology — anonymous study</title>
+<style>
+:root{color-scheme:light;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color:#172231;background:#f3f6f9}
+*{box-sizing:border-box}
+body{margin:0}
+header{background:#142437;color:white;padding:24px 20px;border-bottom:5px solid #49b19c}
+header .wrap{max-width:1040px;margin:auto}
+main{max-width:1040px;margin:25px auto 70px;padding:0 18px}
+h1{font-size:26px;margin:0 0 3px}h2{font-size:20px;margin:0 0 14px}h3{font-size:17px;margin:0 0 8px}
+.muted{color:#4d5b69}.inverse{color:#d4dfe8}.shell{background:white;border:1px solid #ccd8e4;border-radius:13px;padding:22px;margin:16px 0}
+.hide{display:none!important}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:#637586}
+.pill{display:inline-block;border-radius:99px;padding:4px 9px;font-size:12px;background:#e3ebf0;color:#243c51;font-weight:650}
+.grid{display:grid;grid-template-columns:1.25fr 0.85fr;gap:18px}.sources{display:grid;gap:10px;max-height:510px;overflow:auto}
+.source{padding:12px;border:1px solid #d2deea;border-radius:8px;background:#fcfdff}
+.source strong{display:block;font-size:14px}.source small{display:block;color:#526475;font-size:12px;word-break:break-all}
+.source p{font-size:14px;margin:4px 0}.admitted{border-left:5px solid #328572;background:#f4fbf9}.excluded{border-left:5px solid #8795a4;background:#f3f6f7}
+.hint{padding:12px;background:#eff5ff;border-radius:8px;border:1px solid #c7d8f3;font-size:13px}
+label{display:block;font-weight:650;margin:12px 0 5px}
+select,input[type=number]{width:100%;padding:10px;border:1px solid #91a6b9;border-radius:8px;background:white;color:#122b3a;font:inherit}
+fieldset{border:1px solid #a6b7c5;border-radius:8px;padding:12px;margin-top:13px}
+fieldset label{font-weight:400;margin:6px 0;display:flex;gap:8px;align-items:center;font-size:13px}
+input[type=checkbox]{width:17px;height:17px}
+button{border:0;padding:12px 18px;background:#155d69;color:white;border-radius:8px;font:inherit;font-weight:700;cursor:pointer}
+button:hover{background:#0c3b45}button:disabled{opacity:.4;cursor:not-allowed}
+button.secondary{background:#e5ebf1;color:#24394a}
+.actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:18px}
+#taskStatus{font-weight:750;color:#172a3b}
+.alert{margin:12px 0;color:#8d283b;font-weight:650}
+code{font-size:13px;word-break:break-all}
+footer{font-size:12px;color:#566575;margin:25px 0}
+@media(max-width:770px){.grid{grid-template-columns:1fr}.sources{max-height:none}.shell{padding:15px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="eyebrow inverse">Evidence chronology • offline participant packet</div><h1>Historical source audit</h1><p class="inverse">Two short questions • voluntary • no names, accounts or API keys</p></div></header>
+<main>
+<section id="welcome" class="shell">
+<h2>Participant information</h2>
+<p>This is a retrospective <strong>2024 Hurricane Milton evidence-source exercise</strong>, not a live forecast or evacuation assessment. The source cards are curated descriptions linked to published government pages. Original 2024 first-publication times have not been independently authenticated.</p>
+<p>You will receive two questions. The same seven source cards appear in both; one view provides additional date/time eligibility markers and the other does not. This is a study of an interface, not a test of you. You may withdraw without downloading answers.</p>
+<p><strong>Data and privacy:</strong> This standalone file runs locally. It does not send your inputs anywhere. At the end you may download a small JSON file containing your answers, task assignment, anonymous random token and browser-measured time. Send it to the researcher only if you consent. Do not enter identifying information.</p>
+<label><input type="checkbox" id="consent"> I am at least 18, understand the exercise, and voluntarily agree to begin.</label>
+<div class="actions"><button id="begin" disabled>Begin two-question study</button><span class="muted">Approx. 4–8 minutes; no penalty for stopping</span></div>
+</section>
+<section id="exercise" class="hide">
+<div class="shell">
+<div class="actions"><span id="taskStatus"></span><span class="pill" id="viewType"></span></div>
+<h2 id="question"></h2>
+<p class="muted">Use only the source claims and their printed times/dates. If nothing was admissible at this UTC time, choose “No admissible source”. A Florida date without an hour becomes eligible only after that entire local date (EDT, UTC−04:00) ends; this is a study policy, <em>not</em> proof of original publication.</p>
+<div class="grid">
+<div><h3>Source reference cards</h3><div id="cards" class="sources"></div></div>
+<div>
+<div id="overlayHelp" class="hint hide"></div>
+<div class="shell" style="margin:12px 0;padding:14px">
+<h3>Your assessment</h3>
+<form id="answers" novalidate>
+<label for="wind">Latest admissible NOAA/NHC maximum sustained wind</label>
+<select id="wind" required>
+<option value="">Select…</option><option value="none">No admissible source</option>
+<option value="70">70 mph</option><option value="100">100 mph</option>
+<option value="125">125 mph</option><option value="155">155 mph</option>
+</select>
+<label for="counties">Latest admissible Florida Governor emergency-order county count</label>
+<select id="counties" required>
+<option value="">Select…</option><option value="none">No admissible source</option>
+<option value="35">35 counties</option><option value="51">51 counties</option>
+</select>
+<fieldset><legend>Which source IDs directly support your two answers?</legend><div id="citations"></div>
+<p class="muted" style="font-size:12px;margin-bottom:0">Leave all unchecked if no source supports either answer. Selecting extra, unrelated or future sources may reduce citation precision.</p></fieldset>
+<p id="formError" class="alert hide" role="alert"></p>
+<div class="actions"><button type="submit">Submit this answer</button><span class="muted" id="taskHint">No answer feedback shown during study</span></div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="finish" class="shell hide">
+<h2>Thank you. The two questions are complete.</h2>
+<p>No answers or correctness scores are shown here, to avoid contaminating other participants. Your session has not been submitted to a server.</p>
+<p><strong>Download your response file</strong> and share it with the researcher only if you choose. It contains no name, email, browsing history or device fingerprint. Browser timings are self-reported and may not be exact.</p>
+<div class="actions"><button id="download">Download anonymous JSON responses</button><span class="pill">No cloud upload</span></div>
+<p id="downloadNotice" class="muted"></p>
+</section>
+<footer>Research-only. No model or sponsor API request is made by this page. Assignment and timing are local; independent human participation requires separate organizer verification.</footer>
+</main>
+<script>
+"use strict";
+const PACKET = __STUDY_PACKET_JSON__;
+const $=id=>document.getElementById(id);
+const answers=[];
+let taskIndex=-1;
+let taskStart=0;
+$("consent").addEventListener("change",()=>{$("begin").disabled=!$("consent").checked});
+$("begin").addEventListener("click",()=>{
+ if(!$("consent").checked)return;
+ $("welcome").classList.add("hide");taskIndex=0;displayTask();
+});
+function element(tag,cls,text){
+ const el=document.createElement(tag);
+ if(cls)el.className=cls;
+ if(text!==undefined)el.textContent=text;
+ return el;
+}
+function displayTask(){
+ const task=PACKET.tasks[taskIndex],eligible=new Set(
+  task.admission_overlay?task.admission_overlay.admitted_source_ids:[]
+ );
+ $("exercise").classList.remove("hide");
+ $("taskStatus").textContent="Question "+(taskIndex+1)+" of 2";
+ $("viewType").textContent=task.arm_label;
+ $("question").textContent="As of "+task.as_of_utc+", what did the admissible sources report?";
+ $("cards").replaceChildren();
+ for(const c of task.cards){
+  const box=element("article","source"+(task.admission_overlay?
+    (eligible.has(c.source_id)?" admitted":" excluded"):""));
+  box.append(element("strong","",c.source_id+" · "+c.issuer));
+  box.append(element("p","",c.claim_type+": "+c.claim_value+" "+c.unit));
+  box.append(element("small","",c.claimed_issue_utc?
+   "Claimed issue UTC: "+c.claimed_issue_utc:
+   "Printed Florida local day: "+c.printed_local_date+" (no public hour proved)"));
+  if(task.admission_overlay){
+   box.append(element("span","pill",eligible.has(c.source_id)?
+    "Admitted by date/time policy":"Not admitted by date/time policy"));
+  }
+  box.append(element("small","",c.source_url));
+  $("cards").append(box);
+ }
+ const help=$("overlayHelp");
+ if(task.admission_overlay){
+  help.textContent="Chronology markers are a date/issue-clock replay. Admitted does not mean original 2024 first public availability was authenticated. Reposts are not independent new issuers.";
+  help.classList.remove("hide");
+ }else help.classList.add("hide");
+ $("citations").replaceChildren();
+ for(const c of task.cards){
+  const lbl=element("label");
+  const cb=document.createElement("input");cb.type="checkbox";cb.name="cite";cb.value=c.source_id;
+  lbl.append(cb,document.createTextNode(c.source_id));
+  $("citations").append(lbl);
+ }
+ $("wind").value="";$("counties").value="";
+ $("formError").classList.add("hide");
+ taskStart=performance.now();
+ window.scrollTo({top:0,behavior:"instant"});
+}
+$("answers").addEventListener("submit",event=>{
+ event.preventDefault();
+ const task=PACKET.tasks[taskIndex];
+ const wind=$("wind").value,county=$("counties").value;
+ if(!wind||!county){
+  $("formError").textContent="Please choose both values (or explicitly choose No admissible source).";
+  $("formError").classList.remove("hide");return;
+ }
+ const ms=Math.round(performance.now()-taskStart);
+ if(ms<1000){
+  $("formError").textContent="Please review the sources before answering.";
+  $("formError").classList.remove("hide");return;
+ }
+ if(ms>900000){
+  $("formError").textContent="This question timed out after 15 minutes. Ask the researcher for a new session.";
+  $("formError").classList.remove("hide");return;
+ }
+ answers.push({
+  task_id:task.task_id,arm:task.arm,as_of_utc:task.as_of_utc,
+  nhc_wind_mph:wind==="none"?null:Number(wind),
+  florida_counties:county==="none"?null:Number(county),
+  source_ids:Array.from(document.querySelectorAll('input[name="cite"]:checked')).map(e=>e.value),
+  elapsed_ms:ms
+ });
+ taskIndex+=1;
+ if(taskIndex>=PACKET.tasks.length){
+  $("exercise").classList.add("hide");$("finish").classList.remove("hide");
+  window.scrollTo({top:0,behavior:"instant"});
+ }else displayTask();
+});
+$("download").addEventListener("click",()=>{
+ if(answers.length!==2)return;
+ const result={
+  kind:"EVIDENCETRAIL_BLIND_ANALYST_RESULT_V1",
+  session_token:PACKET.session_token,
+  packet_sha256:PACKET.packet_sha256,
+  assignment_slot_mod8:PACKET.assignment_slot_mod8,
+  answers
+ };
+ const blob=new Blob([JSON.stringify(result,null,2)+"\n"],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="evidencetrail-response-"+PACKET.session_token+".json";
+ document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+ $("downloadNotice").textContent="The file was generated locally. Please return it only if you consent; no submission was made automatically.";
+});
+</script>
+</body>
+</html>

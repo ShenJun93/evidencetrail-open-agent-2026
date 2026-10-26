@@ -1,0 +1,9 @@
+EvidenceTrail helps incident reviewers see which evidence supports a claim, what is missing, and how a conclusion changes when a source is removed.
+
+In a controlled Milton replay at 11:00 UTC, NOAA #8 supports 100 mph and Florida EO #215 supports 51 counties. Removing the order changes 51 to 35; removing a later NOAA advisory changes 155 to 125 mph. Strict mode abstains when original-publication availability is unproved. These are source-removal experiments, not publisher retractions, causal findings, or weather advice.
+
+A fictional warehouse case shows a dependency missed by single-source checks: removing two records together changes 25 to 12 pallets. Reviewers can inspect source pins and admission clocks, import a bounded typed case, and add reviewed evidence without rewriting prior records.
+
+AI has a bounded supporting role. One local Nightshift CLI proposal passed structural checks, but its prose and self-reported route are unverified. A separate real browser request was rejected by the output-shape guard; the interface retained the deterministic result. Zetaris, official H-MEM, direct NVIDIA, and Nightshift executions are separate, not one integrated sponsor pipeline. Sponsor eligibility remains unresolved.
+
+The 26 Oct local judge replay passed 580 Python tests, 20 chronology checks, six Edge scenarios, and the WHY Evidence Map interaction. It ran on a dirty worktree with `.env.local` and the Meterless vendor checkout present; the runner reports no key-file read or sponsor call, but this is not a clean keyless replay. These are same-machine engineering checks, not independent validation. Analyst impact is unmeasured (n=0). Historical-source limits, pre-window research, and third-party components are disclosed.

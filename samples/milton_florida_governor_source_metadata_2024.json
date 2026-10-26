@@ -1,0 +1,55 @@
+{
+  "kind": "EVIDENCETRAIL_MILTON_CROSS_ISSUER_2024_V1",
+  "curation_date": "2026-10-24",
+  "issuer_families": [
+    "NOAA_NHC",
+    "FLORIDA_GOVERNOR"
+  ],
+  "date_only_zone": "America/New_York",
+  "date_only_2024_october_offset_hours": -4,
+  "date_only_time_uncertainty_rule": "In REPORTED_DATELINE_REPLAY, admit a date-only Florida source only after that entire local date has ended: following midnight EDT = 04:00 UTC. This is a conservative convention, NOT independently verified publication. Strict mode abstains without authenticated original 2024 first availability.",
+  "origin_first_publication_authenticated": false,
+  "items": [
+    {
+      "id": "FL-EO-24-214",
+      "issuer_family": "FLORIDA_GOVERNOR",
+      "claim_type": "florida_counties_under_emergency",
+      "value": 35,
+      "displayed_date_local": "2024-10-05",
+      "url": "https://flgov.com/eog/news/press/2024/memorandum-executive-order-number-24-214-emergency-management-tropical-storm-milton",
+      "description": "Florida Governor memorandum on Oct 5 states Executive Order 24-214 declares state of emergency in 35 counties; date is not a reliable publication clock."
+    },
+    {
+      "id": "FL-EO-24-215",
+      "issuer_family": "FLORIDA_GOVERNOR",
+      "claim_type": "florida_counties_under_emergency",
+      "value": 51,
+      "displayed_date_local": "2024-10-06",
+      "url": "https://www.flgov.com/eog/news/press/2024/memorandum-executive-order-number-24-215-emergency-management-amending-executive",
+      "description": "Florida Governor memorandum on Oct 6 says Executive Order 24-215 amends 24-214 and covers 51 counties; exact first posting time is unknown."
+    },
+    {
+      "id": "FL-GOV-20241007-1100-ET",
+      "issuer_family": "FLORIDA_GOVERNOR",
+      "claim_type": "florida_governor_press_wind_mph_reported_asof_11am_et",
+      "value": 155,
+      "displayed_date_local": "2024-10-07",
+      "url": "https://flgov.com/eog/news/press/2024/governor-ron-desantis-issues-updates-state-preparedness-efforts-hurricane-milton-0",
+      "description": "Florida Governor October 7 press page says AS OF 11 a.m. ET the storm had maximum sustained winds of 155 mph; 11 a.m. is the OBSERVATION REFERENCE, not proven web publication time.",
+      "syndicated_references": [
+        {
+          "id": "FL-FDEM-REPRINT-2024107",
+          "url": "https://www.floridadisaster.org/news-media/news/2024107/",
+          "relationship": "ICYMI republication of the Governor update: not independent corroboration or a third issuing family"
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    "Two origin families, not three: FDEM republishes the Governor statement.",
+    "Florida date-only metadata lacks exact first-public clock. A safe reported-date eligibility boundary does not authenticate a historical archive.",
+    "NOAA/NHC storm wind advisory and Florida executive emergency order are different claim types. Never treat an emergency order count as a measured wind or an evacuation directive.",
+    "The October 7 Florida Governor page's 'as of 11 a.m. ET' is a meteorological observation reference, NOT a proven document publication time.",
+    "No original 2024 page hashes, digital signature, Wayback snapshot, blind human analyst or sponsor model inference."
+  ]
+}

@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline' 'self'; style-src 'unsafe-inline' 'self'; connect-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'">
+<title>EvidenceTrail — Why did the claim change?</title>
+<link rel="stylesheet" href="/ui.css">
+</head>
+<body class="app-page why-page"><a class="skip-link" href="#workspace">Skip to workspace</a>
+<aside class="app-rail" aria-label="EvidenceTrail navigation">
+<a class="app-brand" href="/why"><span class="brand-mark" aria-hidden="true"></span>EvidenceTrail</a>
+<p class="rail-label">Evidence workspace</p><nav class="rail-nav" aria-label="EvidenceTrail views"><a href="/why" aria-current="page"><span class="nav-index" aria-hidden="true">01</span>Investigation</a><a href="/demo"><span class="nav-index" aria-hidden="true">02</span>Timeline replay</a><a href="/proof"><span class="nav-index" aria-hidden="true">03</span>Proof register</a></nav><div class="rail-section"><p class="rail-label">In this investigation</p><nav class="rail-nav" aria-label="Investigation sections"><a href="#conclusion">Current conclusion</a><a href="#source-test">Test a source</a><a href="#time-boundaries">Time boundaries</a><a href="#evidence-reasoning">Evidence &amp; gaps</a></nav></div>
+<div class="rail-foot"><span class="local-indicator">Offline sample workspace</span><br>Source-bound. Time-aware.<br>Local model is opt-in only.</div></aside>
+<main class="app-main" id="workspace"><div class="app-content"><div class="app-topbar"><span>Workspace <span aria-hidden="true">/</span> <strong>WHY investigation</strong></span><span class="topbar-note">LOCAL REPLAY · OPTIONAL LOOPBACK REQUEST</span></div>
+<section class="hero" aria-labelledby="page-heading">
+<div><p class="eyebrow">The evidence investigation desk</p><h1 id="page-heading">Every claim has a turning point.</h1>
+<p>Trace a conclusion to its source. Remove a record, move the clock, and see exactly what changes.</p><a class="jump-link" href="#conclusion">View current conclusion <span aria-hidden="true">↓</span></a></div>
+<div class="hero-note"><strong>Ask a better question.</strong>Which evidence changes the answer — and what is still missing?</div></section>
+<div class="alert"><strong>Research only.</strong> Sources are not independently authenticated. Removing a source is a simulation.
+<details><summary>Read the evidence limits</summary>The default replay uses curated NOAA/NHC and Florida Governor references. Original 2024 first-publication timestamps and source bytes have not been independently authenticated. Imported cases remain operator-declared and unverified. This is evidence research, not operational advice. Source removal is never an observed retraction.</details></div>
+<section class="casebar" aria-labelledby="case-heading">
+<div class="case-heading-row"><h2 id="case-heading">Your case, your evidence.</h2><span class="eyebrow">Open Case Investigator</span></div>
+<div class="case-actions">
+<button type="button" id="createCase">Create a case</button>
+<button type="button" class="secondary" id="addEvidence" disabled title="Create or import a case first">Add evidence</button>
+<button type="button" class="secondary" id="warehouseExample">Try fictional warehouse</button>
+<label class="import-control" for="casefile">Import case JSON · up to 60 KB <input type="file" id="casefile" accept=".json,application/json"></label>
+<button type="button" class="secondary" id="exportCase">Download case pack</button>
+<button type="button" class="secondary" id="resetCase" hidden>Return to Milton demo</button>
+</div>
+<p id="caseStatus" class="muted" aria-live="polite">Default: curated Milton replay. Imported pins check consistency, not source truth.</p>
+<p id="caseQuestion" class="muted" hidden></p>
+</section>
+<section class="panel" id="caseEditor" hidden aria-labelledby="editorHeading">
+<h2 id="editorHeading">Create a case from source entries</h2>
+<p class="muted" id="editorContext">Enter the quantities and dates you read in each source. Nothing is fetched from a URL.</p>
+<form id="draftForm" novalidate style="display:block;margin:0;background:none;border:0;padding:0">
+<div class="entry-grid" id="draftMetadata">
+<label>Case ID<input id="draftCaseId" maxlength="80" placeholder="REVIEW-001"></label>
+<label class="wide">Case title<input id="draftTitle" maxlength="160" placeholder="What are you reviewing?"></label>
+<label class="wide">Question context<textarea class="resize-none" id="draftQuestion" maxlength="1000" rows="2" placeholder="Which evidence would change this conclusion?"></textarea></label>
+<label class="wide">Review as-of — ISO time with timezone<input id="draftClock" type="text" maxlength="64" placeholder="2026-10-25T09:00:00+07:00" spellcheck="false"></label>
+</div>
+<div id="sourceRows"></div>
+<div class="case-actions"><button type="button" class="secondary" id="addSourceRow">Add another source</button>
+<button type="submit" id="previewDraft">Preview evidence</button>
+<button type="button" class="secondary" id="cancelDraft">Cancel editing</button></div>
+<p class="muted">Use the same claim group, issuing organization ID and unit for competing declarations of the same quantity. Values are whole numbers from 0 to 100,000,000. At most 12 sources per case.</p>
+<div id="draftErrors" role="alert" aria-live="assertive"></div>
+<div id="draftPreview" aria-live="polite"></div>
+<label class="review-line"><input type="checkbox" id="draftReviewed" disabled>
+<span>I reviewed these quantities and dates. The generated hashes record my entries; they do not independently verify the sources.</span></label>
+<button type="button" id="adoptDraft" disabled>Use reviewed case</button>
+</form>
+</section>
+<template id="sourceRowTemplate">
+<fieldset class="source-row"><legend>Source</legend><div class="entry-grid">
+<label>Source ID<input data-field="source_id" maxlength="80" placeholder="SOURCE-1"></label>
+<label>Claim group<input data-field="claim_key" maxlength="80" placeholder="STOCK"></label>
+<label>Declared quantity<input data-field="value" inputmode="numeric" placeholder="25"></label>
+<label>Unit ID<input data-field="unit" maxlength="80" placeholder="pallets"></label>
+<label>Issuing organization ID<input data-field="issuer_family" maxlength="80" placeholder="ISSUER_1"></label>
+<label>Source type<select data-field="source_type"><option value="government_original">Original government publication — unverified</option><option value="fictional">Fictional exercise</option></select></label>
+<label class="wide">Publisher name<input data-field="publisher" maxlength="200" placeholder="Name printed on the document"></label>
+<label class="wide">Source reference<input data-field="locator" maxlength="2048" placeholder="https://… or synthetic://exercise/source-1" spellcheck="false"></label>
+<label>Date precision<select data-field="clock_type"><option value="precise">Date and time with timezone</option><option value="local_day">Printed date only</option></select></label>
+<label data-clock="precise">Reported issue time — ISO with timezone<input data-field="issued_at" maxlength="64" placeholder="2026-10-25T08:00:00+07:00" spellcheck="false"></label>
+<label data-clock="local_day" hidden>Printed local date<input data-field="local_day" type="date"></label>
+<label data-clock="local_day" hidden>UTC offset on that date<select data-field="utc_offset_minutes"><option value="">Choose source offset</option></select></label>
+<label class="wide">Relevant excerpt<textarea class="resize-none" data-field="excerpt" rows="3" maxlength="12000" placeholder="Copy the relevant words. You declare how the quantity maps to them; no automatic entailment check is performed."></textarea></label>
+</div><button type="button" class="secondary" data-action="remove-source">Remove this draft source</button></fieldset>
+</template>
+<section class="setup-card" aria-labelledby="setup-heading"><div class="setup-heading" id="setup-heading"><span class="section-number" aria-hidden="true">01 /</span> Set the evidence boundary</div><form id="controls" novalidate>
+<label for="asof" id="demoClock">As-of time (UTC)
+<select id="asof">
+<option value="2024-10-07T03:59:00Z">Oct 7 · 03:59 (before Florida #215 cutoff)</option>
+<option value="2024-10-07T04:00:00Z">Oct 7 · 04:00 (Florida #215 first admitted)</option>
+<option value="2024-10-07T11:00:00Z" selected>Oct 7 · 11:00 (NOAA #8, Florida #215)</option>
+<option value="2024-10-07T15:00:00Z">Oct 7 · 15:00 (NOAA #10)</option>
+<option value="2024-10-08T04:00:00Z">Oct 8 · 04:00 (Florida press date cutoff)</option>
+</select></label>
+<label for="caseClock" id="caseClockWrap" hidden>Case as-of (UTC)
+<input type="text" id="caseClock" placeholder="2026-10-24T09:30:00Z" spellcheck="false"></label>
+<label for="searchDepth" id="searchDepthWrap" hidden>Search source groups up to
+<select id="searchDepth"><option value="1">1 source</option><option value="2" selected>2 sources</option><option value="3">3 sources</option></select></label>
+<label for="mode">Evidence policy
+<select id="mode">
+<option value="reported">Reported issue/date replay</option>
+<option value="strict">Strict: original-publication attestation required</option>
+</select></label>
+<button type="submit" id="run">Explain WHY</button>
+<span class="status" id="status" aria-live="polite">Ready for sample-only local replay</span>
+</form></section>
+<p id="error" role="alert" aria-live="assertive"></p><div class="results-heading"><h2>Investigation results</h2><span>Read the claim. Check the source. Test the boundary.</span></div>
+<section class="panel evidence-map" aria-labelledby="evidenceMapHeading">
+<div class="evidence-map-heading"><div><p class="eyebrow">The evidence path</p><h3 id="evidenceMapHeading">What supports this conclusion?</h3></div><span class="map-clock" id="mapClock"></span></div>
+<div class="evidence-map-flow">
+<div class="map-stage map-sources"><span class="map-stage-label">SOURCE RECORDS</span><p class="map-stage-hint">Select a source to preview its removal.</p><div class="map-source-list" id="mapSources"></div></div>
+<span class="map-connector" aria-hidden="true">→</span>
+<div class="map-stage map-outcome"><span class="map-stage-label">RULE-SELECTED CLAIM</span><div id="mapConclusion" aria-live="polite"></div></div>
+</div>
+<div class="map-impact" id="mapImpact" aria-live="polite"><span class="map-stage-label">WITHDRAWAL PREVIEW</span><strong id="mapImpactText">Choose a source to see what changes.</strong><span class="map-impact-note">Simulation only. No publisher actually changed or retracted a record.</span></div>
+</section>
+<div class="grid">
+<section class="panel conclusion-panel" id="conclusion">
+<h2><span class="section-number" aria-hidden="true">02 /</span> Current conclusion</h2>
+<div class="metric" id="metrics"></div>
+<div id="claims" aria-live="polite"></div>
+<p class="disclaimer">Displayed values match the declared source pins, not independently authenticated publisher bytes. The default case uses curated official-source metadata. Unverified LLM free text is excluded.</p>
+</section>
+<section class="panel" id="source-test">
+<h2><span class="section-number" aria-hidden="true">03 /</span> What if this source were missing?</h2>
+<p class="muted">Choose one source to remove in the simulation. All other source records remain unchanged. A future or irrelevant source should not change the current claim.</p>
+<label for="removed">Which source is hypothetically missing?
+<select class="source-select" id="removed" aria-label="Simulated source removal"></select></label>
+<div id="removal"></div>
+</section>
+<section class="panel" id="time-boundaries">
+<h2><span class="section-number" aria-hidden="true">04 /</span> When the answer changes</h2>
+<p class="muted">Each row compares immediately before a conservative policy clock to the moment it becomes eligible. These are NOT observed first-publication events.</p>
+<div id="timeline"></div>
+</section>
+<section class="panel" id="evidence-reasoning">
+<h2><span class="section-number" aria-hidden="true">05 /</span> Follow the reasoning</h2>
+<div id="why"></div>
+<h3>Evidence still needed</h3>
+<div id="needed" aria-live="polite"></div>
+<details><summary>Unavailable sources and exclusion reasons</summary><div id="unavailable"></div></details>
+<hr style="border:0;border-top:1px solid var(--hair);margin:24px 0">
+<h3>Evidence guardrails</h3>
+<p class="muted">Every record, including future records, is checked against source identity and a declared manifest before interventions. Strict mode abstains without independent historical availability proof. Fictional sources are never independent corroboration. The default route reads static fixtures; case import processes submitted JSON locally. No model request occurs unless you separately enable the local Nightshift route and confirm a case-level request below. This route sends only selected before/after claim facts to loopback; it cannot invoke Zetaris or NVIDIA.</p>
+
+</section>
+</div>
+<section class="panel coalition" id="updatePanel" hidden aria-labelledby="updateHeading">
+<h2 id="updateHeading">What changed when evidence was added?</h2>
+<p id="updateSummary" class="muted"></p><div id="updateChanges"></div>
+<details><summary>Executed update checks</summary><ol id="updateTrace"></ol></details>
+</section>
+<section class="panel" id="nextEvidencePanel" hidden style="margin-bottom:18px">
+<h2>Next evidence check</h2><div id="nextEvidenceList"></div>
+<div class="case-actions"><button type="button" class="secondary" id="exportEvidenceRequest">Download evidence request</button>
+<button type="button" class="secondary" id="exportInvestigation">Download investigation record</button></div>
+<p class="disclaimer">Suggested checks are a plan for an analyst. Adding a source here records an operator action; it does not execute a SQL query or a model request.</p>
+</section>
+<section class="panel coalition" id="coalitionPanel" hidden>
+<h2>Which source combination changes the claim?</h2>
+<p id="searchCoverage" class="muted"></p>
+<div id="cutsets"></div>
+<h3>Run a joint withdrawal experiment</h3>
+<div id="jointSources" class="joint-options"></div>
+<button type="button" id="testJoint">Test selected combination</button>
+<div id="jointEffect" aria-live="polite"></div>
+<details><summary>Executed investigation steps</summary><ol id="caseTrace"></ol></details>
+<p class="disclaimer">These are conditional source-set checks, not statistical confidence, independent corroboration or real-world causation. The question is context; typed claim rules define what is computed.</p>
+</section>
+<section class="panel nightshift-panel" id="nightshiftPanel" hidden aria-labelledby="nightshiftHeading">
+<h2 id="nightshiftHeading">Ask the local model to explain this change</h2>
+<p class="muted">EvidenceTrail computes the claim first. With the server opt-in enabled, this sends only the selected claim key, before/after values and source IDs to the local Nightshift Runtime. No URL, full case, cloud provider, SQL query or source collection is sent. The model cannot change the computed result.</p>
+<p id="nightshiftCapability" class="nightshift-capability" aria-live="polite">Checking local feature availability…</p>
+<label class="review-line"><input type="checkbox" id="confirmLocalNightshift">
+<span>I understand this asks my local Nightshift Runtime to generate a short explanation for the selected case.</span></label>
+<button type="button" id="askLocalNightshift" disabled>Send the selected facts to local Nightshift</button>
+<div id="nightshiftResult" role="status" aria-live="polite"></div>
+<p class="disclaimer">The response is unverified model prose. Any displayed route name is runtime-reported, not independently attested. A browser case request is still separate from Zetaris/H-MEM or NVIDIA sponsor proof.</p>
+</section>
+<footer>Source withdrawal is a counterfactual, not a causal claim about real-world events or publisher retractions. No model request occurs in offline replay; the optional local Runtime request requires a separate server flag, checkbox and button click. No participant study is performed. <span id="stamp"></span></footer>
+</div></main>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+let active=null;
+let casePack=null,withdrawals=new Set(),generation=0,lastInvestigation=null;
+let localNightshiftEnabled=false,nightshiftBusy=false;
+const node=(tag,cls,content)=>{
+ const v=document.createElement(tag);if(cls)v.className=cls;
+ if(content!==undefined)v.textContent=String(content);return v;
+};
+function value(claim){
+ return claim?claim.value+" "+claim.unit+" — "+claim.source_id:"ABSTAIN / no admissible claim";
+}
+function compactValue(claim){
+ return claim?claim.value+" "+claim.unit:"No admissible claim";
+}
+function renderEvidenceMap(report){
+ const sources=$("mapSources"),claims=$("mapConclusion");
+ sources.replaceChildren();claims.replaceChildren();
+ $("mapClock").textContent="AS OF "+report.as_of_utc;
+ const currentSources=new Set(Object.values(report.selected_claims).map(c=>c.source_id));
+ for(const source of report.source_withdrawal_interventions){
+  const button=node("button","map-source-node","");button.type="button";
+  button.setAttribute("aria-label","Preview removing source "+source.removed_source_id);
+  button.setAttribute("aria-pressed",String($("removed").value===source.removed_source_id));
+  const id=node("strong","map-source-id",source.removed_source_id);
+  const caseSource=casePack?.sources?.find(item=>item.source_id===source.removed_source_id);
+  const fictional=caseSource?.record_kind==="SYNTHETIC_CAPACITY"||caseSource?.source_type==="fictional"||caseSource?.fictional===true;
+  const status=source.source_was_admissible_before_removal?"Admitted at this clock":"Not admitted at this clock";
+  button.append(id,node("span","map-source-status",[
+   currentSources.has(source.removed_source_id)?"Supports selected claim":null,
+   fictional?"FICTIONAL EXERCISE":null,status
+  ].filter(Boolean).join(" · ")));
+  button.addEventListener("click",()=>{$("removed").value=source.removed_source_id;showRemoval();});
+  sources.append(button);
+ }
+ const entries=Object.entries(report.selected_claims);
+ if(!entries.length){
+  const abstain=node("div","map-abstain","ABSTAIN");
+  abstain.append(node("span","",report.policy==="STRICT_AS_OF_2024"?
+   "No source has independently authenticated original publication under Strict policy.":
+   "No unambiguous source-pinned claim is admissible at this clock."));
+  claims.append(abstain);
+ }else for(const [key,claim] of entries){
+  const card=node("article","map-claim");
+  card.append(node("span","map-claim-key",key),node("strong","map-claim-value",compactValue(claim)),
+   node("span","map-claim-source","From "+claim.source_id+(claim.fictional?" · FICTIONAL EXERCISE":"")));
+  claims.append(card);
+ }
+}
+function updateEvidenceImpact(entry){
+ const label=$("mapImpactText");
+ if(!entry){label.textContent="Choose a source to see what changes.";return;}
+ if(!entry.changed_claims.length){
+  label.textContent="Removing "+entry.removed_source_id+" does not change an admissible claim at this clock.";
+ }else{
+  label.textContent=entry.changed_claims.map(change=>
+   change.claim_key+": "+compactValue(change.before)+" → "+compactValue(change.after)
+  ).join(" · ");
+ }
+ for(const button of $("mapSources").querySelectorAll("button"))
+  button.setAttribute("aria-pressed",String(button.querySelector(".map-source-id")?.textContent===entry.removed_source_id));
+}
+function putEffects(container, changes){
+ container.replaceChildren();
+ if(!changes.length){
+  container.append(node("p","muted","No change to selected source-bound claims."));
+  return;
+ }
+ for(const c of changes){
+  const block=node("div","effect");
+  block.append(node("b","",c.claim_key+" / "+c.effect));
+  block.append(node("div","effect-before","Before: "+value(c.before)));
+  block.append(node("div","effect-after","After: "+value(c.after)));
+  container.append(block);
+ }
+}
+function showRemoval(){
+ if(!active)return;
+ const entry=active.source_withdrawal_interventions.find(
+  x=>x.removed_source_id===$("removed").value
+ );
+ if(!entry)return;
+ const target=$("removal");
+ updateEvidenceImpact(entry);
+ target.replaceChildren(node("p","muted",entry.source_was_admissible_before_removal?
+  "Source was admitted at this as-of time.":"Source was not admitted at this as-of time."));
+ const wrapper=node("div");
+ putEffects(wrapper,entry.changed_claims);
+ target.append(wrapper,node("p","disclaimer","Simulation only: no publisher actually retracted or changed this source."));
+}
+function render(r){
+ active=r;
+ $("metrics").replaceChildren(
+  node("span","",r.audited_full_batch_source_count+" source records checked"),
+  node("span","",Object.keys(r.selected_claims).length+" selected claim(s)"),
+  node("span","","As of "+r.as_of_utc),
+  node("span","",r.policy==="STRICT_AS_OF_2024"?"Strict · original publication required":"Reported issue/date replay")
+ );
+ $("claims").replaceChildren();
+ for(const [key,c] of Object.entries(r.selected_claims)){
+  const box=node("div","claim");
+  box.append(node("h3","",key),node("b","",c.value+" "+c.unit),
+             node("small","",c.source_id+" · "+c.issuer_family),
+             node("small","","Clock policy: "+c.clock_basis));
+  if(c.fictional)box.append(node("small","","FICTIONAL SOURCE"));
+  $("claims").append(box);
+ }
+ if(!Object.keys(r.selected_claims).length){
+  $("claims").append(node("p","muted",r.policy==="STRICT_AS_OF_2024"?
+   "ABSTAIN. No claim has independently authenticated original first publication under this policy.":
+   "ABSTAIN. No unambiguous source-pinned claim is admissible at this as-of. See evidence still needed."));
+ }
+ const selected=$("removed").value;
+ $("removed").replaceChildren();
+ for(const entry of r.source_withdrawal_interventions){
+  const option=document.createElement("option");
+  option.value=entry.removed_source_id;
+  const numeric=entry.changed_claims.some(c=>["VALUE_CHANGED","CLAIM_APPEARS","CLAIM_ABSTAINS"].includes(c.effect));
+  option.textContent=entry.removed_source_id+
+    (numeric?" · value/availability changes":entry.changed_claims.length?" · citation changes only":" · no change now");
+  $("removed").append(option);
+ }
+ const firstPivot=r.source_withdrawal_interventions.find(x=>x.changed_claims.length);
+ $("removed").value=r.source_withdrawal_interventions.some(x=>x.removed_source_id===selected)?
+  selected:(firstPivot?firstPivot.removed_source_id:r.source_withdrawal_interventions[0]?.removed_source_id||"");
+ renderEvidenceMap(r);
+ showRemoval();
+ $("why").replaceChildren();
+ for(const reason of r.rule_explanations){
+  const box=node("div","claim");
+  box.append(node("h3","",reason.claim_key));
+  box.append(node("p","",reason.selected_claim?
+    "Selected "+value(reason.selected_claim):reason.status==="ABSTAIN_CONFLICTING_LATEST_SOURCES"?
+    "Abstained: latest admitted sources conflict; source ID cannot settle the value.":
+    "Abstained: no admitted source for this claim type."));
+  box.append(node("small","",reason.source_removal_pivots.length?
+    "Removals changing claim value or citation: "+reason.source_removal_pivots.join(", "):
+    "No single-source removal changes this claim at the chosen time."));
+  $("why").append(box);
+ }
+ $("needed").replaceChildren();
+ for(const need of r.evidence_needed){
+  const box=node("div","effect");
+  box.append(node("b","",need.claim_key+" / "+need.reason_code),
+             node("p","",need.next_action),
+             node("small","",need.source_ids.length?"Relevant sources: "+need.source_ids.join(", "):
+                  "No source registered for this claim."));
+  $("needed").append(box);
+ }
+ if(!r.evidence_needed.length)$("needed").append(node("p","muted",
+  "All configured claim types have a selected source under this policy. Original publication availability remains unverified."));
+ $("unavailable").replaceChildren();
+ for(const source of r.excluded_sources){
+  $("unavailable").append(node("p","muted",source.source_id+" — "+source.reason));
+ }
+ if(!r.excluded_sources.length)$("unavailable").append(node("p","muted","No source excluded by this time policy."));
+ $("timeline").replaceChildren();
+ if(!r.clock_boundary_interventions.length){
+  $("timeline").append(node("p","muted","Strict policy: no source admissible; no reported-clock boundaries are promoted to evidence."));
+ }else for(const boundary of r.clock_boundary_interventions){
+  const details=document.createElement("details");
+  const pivot=boundary.changed_claims.length?"CLAIM CHANGES":"NO CLAIM CHANGE";
+  details.append(node("summary","",boundary.at_boundary_utc+" · "+pivot));
+  details.append(node("p","muted","Crossed source ID(s): "+boundary.crossed_source_ids.join(", ")));
+  const region=node("div");
+  putEffects(region,boundary.changed_claims);
+  details.append(region);
+  $("timeline").append(details);
+ }
+ $("stamp").textContent="Manifest check: "+r.pinned_input_policy_sha256_not_a_signature.slice(0,16)+"… (digest, not digital signature)";
+}
+function clearView(){
+ active=null;lastInvestigation=null;$("removed").disabled=true;$("coalitionPanel").hidden=true;
+ $("updatePanel").hidden=true;$("nextEvidencePanel").hidden=true;
+ $("nightshiftPanel").hidden=true;$("nightshiftResult").replaceChildren();
+ $("confirmLocalNightshift").checked=false;
+ window.caseWorkbench?.clearResult();
+ for(const id of ["metrics","mapSources","mapConclusion","mapClock","mapImpactText","claims","removal","why","needed","unavailable","timeline","stamp","cutsets","jointSources","jointEffect","caseTrace"])
+  $(id).replaceChildren();
+}
+function renderInvestigation(report,requestPack){
+ lastInvestigation=report;
+ const search=report.resilience;
+ $("coalitionPanel").hidden=false;
+ $("searchCoverage").textContent=search.subsets_evaluated+" source subsets actually evaluated. "+
+  (search.all_source_subsets_examined?"All subsets of currently admissible sources were examined.":
+   "All subsets through size "+search.searched_max_withdrawal_size+" examined; larger sets were not searched.");
+ for(const [key,c] of Object.entries(search.claims)){
+  const box=node("div","effect");box.append(node("b","",key));
+  const minimum=c.minimum_withdrawals_to_change_value_or_availability;
+  box.append(node("p","",minimum!==null?
+   "Smallest withdrawal changing value or availability: "+minimum+" source(s).":
+   c.proven_minimum_lower_bound!==null?
+   "No value-changing withdrawal found at this depth. At least "+c.proven_minimum_lower_bound+" sources would be needed within this case.":
+   "No value-changing withdrawal found. There may be no admitted baseline claim."));
+  for(const set of c.minimal_withdrawal_sets){
+   const line=node("p","",set.removed_source_ids.join(" + ")+": "+value(set.before)+" → "+value(set.after));
+   const button=node("button","secondary","Simulate this group");button.type="button";
+   button.addEventListener("click",()=>{if($("run").disabled)return;withdrawals=new Set(set.removed_source_ids);run();});
+   line.append(document.createTextNode(" "),button);box.append(line);
+  }
+  if(c.interpretation==="RESOLUTION_PROBE_NOT_FACT_VALIDATION")box.append(node("p","muted",
+   "No baseline claim: removing a conflicting source may create a claim, but does not validate its truth."));
+  $("cutsets").append(box);
+ }
+ const eligible=new Set(search.withdrawal_candidate_source_ids);
+ withdrawals=new Set(report.experiment.removed_source_ids);
+ for(const source of requestPack.sources){
+  const label=node("label"),input=document.createElement("input");
+  input.type="checkbox";input.value=source.source_id;input.checked=withdrawals.has(source.source_id);
+  input.addEventListener("change",()=>{input.checked?withdrawals.add(input.value):withdrawals.delete(input.value);});
+  label.append(input,document.createTextNode(source.source_id+(eligible.has(source.source_id)?"":" (excluded now)")));
+  $("jointSources").append(label);
+ }
+ $("jointEffect").append(node("p","muted",report.experiment.removed_source_ids.length?
+  "Simulated withdrawal: "+report.experiment.removed_source_ids.join(" + ")+". "+
+   (report.experiment.value_or_availability_changed?"Claim value or availability changed.":
+    "Claim values unchanged; any citation-only changes are shown below."):
+  "No sources withdrawn in the selected experiment."));
+ const effects=node("div");putEffects(effects,report.experiment.changed_claims);$("jointEffect").append(effects);
+ for(const step of report.execution_trace)$("caseTrace").append(node("li","muted",JSON.stringify(step)));
+ $("caseStatus").textContent=report.title+" · "+report.trust_basis+" · "+requestPack.sources.length+" source records";
+ $("caseQuestion").textContent="Question context: "+report.question;
+ window.caseWorkbench?.onResult(report);
+}
+function setCaseControls(imported){
+ $("demoClock").hidden=imported;$("caseClockWrap").hidden=!imported;
+ $("searchDepthWrap").hidden=!imported;$("resetCase").hidden=!imported;$("caseQuestion").hidden=!imported;
+}
+function setBusy(busy){
+ for(const id of ["run","warehouseExample","casefile","resetCase","testJoint","exportCase",
+                  "asof","mode","caseClock","searchDepth","createCase"])$(id).disabled=busy||Boolean(window.caseWorkbench?.isOpen());
+ $("addEvidence").disabled=busy||Boolean(window.caseWorkbench?.isOpen())||!casePack||!lastInvestigation;
+ syncNightshiftControls(busy);
+}
+function syncNightshiftControls(busy=false){
+ const hasCase=Boolean(casePack&&lastInvestigation);
+ $("nightshiftPanel").hidden=!hasCase;
+ const hasChangedClaim=Boolean(lastInvestigation?.experiment?.changed_claims?.length);
+ if(hasCase&&!hasChangedClaim&&!nightshiftBusy){
+  $("nightshiftCapability").textContent="Select and run a source withdrawal that changes a claim before requesting an explanation.";
+ }else if(hasCase&&localNightshiftEnabled&&!nightshiftBusy){
+  $("nightshiftCapability").textContent="Enabled by this server's startup flag. The request remains off until you check the box and click the button.";
+ }
+  $("askLocalNightshift").disabled=busy||nightshiftBusy||!localNightshiftEnabled||!hasCase||
+  !hasChangedClaim||!$("confirmLocalNightshift").checked||Boolean(window.caseWorkbench?.isOpen());
+}
+function beginCaseLoad(){
+ window.caseWorkbench?.reset();
+ const revision=++generation;
+ clearView();$("caseQuestion").textContent="";$("error").textContent="";
+ $("status").textContent="Loading case locally…";setBusy(true);
+ return revision;
+}
+function failCaseLoad(revision){
+ if(revision!==generation)return;
+ clearView();setBusy(false);$("status").textContent="Case import refused";
+ $("caseQuestion").textContent="";$("caseStatus").textContent="Unvalidated case. No current conclusion.";
+ $("error").textContent="Case import refused. Use a case pack below 60,000 bytes with an aware UTC clock.";
+}
+async function loadCase(pack,revision){
+ if(revision!==generation)return;
+ casePack=pack;withdrawals=new Set();setCaseControls(true);
+ $("mode").value="reported";
+ $("caseClock").value=typeof pack?.as_of_utc==="string"?
+  pack.as_of_utc:"";
+ setBusy(false);
+ await run();
+}
+async function run(event){
+ if(event)event.preventDefault();
+ if($("run").disabled)return;
+ const revision=++generation,requestPack=casePack;
+ $("confirmLocalNightshift").checked=false;
+ setBusy(true);$("status").textContent="Replaying locally…";$("error").textContent="";
+ // A failed new replay must not leave an older conclusion under new controls.
+ clearView();
+ try{
+  const clock=$("caseClock").value;
+  const body=requestPack?{case:requestPack,as_of_utc:clock.trim(),
+   strict:$("mode").value==="strict",withdrawn_source_ids:[...withdrawals],search_depth:Number($("searchDepth").value)}:
+   {as_of_utc:$("asof").value,strict:$("mode").value==="strict"};
+  const resp=await fetch(requestPack?"/case-investigation":"/why-counterfactual",{
+   method:"POST",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify(body)
+  });
+  if(!resp.ok)throw Error("Offline evidence replay refused the request");
+  const report=await resp.json();
+  if(revision!==generation)return;
+  if(requestPack&&(report.case_id!==requestPack.case_id||report.kind!=="EVIDENCETRAIL_OPEN_CASE_INVESTIGATION_V1"||
+     report.model_or_sponsor_called!==false||report.trust_basis!=="OPERATOR_DECLARED_NOT_EXTERNALLY_VERIFIED"))
+   throw Error("Imported-case provenance contract mismatch");
+  const data=requestPack?report.why:report;
+  if(data.kind!=="EVIDENCETRAIL_SOURCE_WITHDRAWAL_AND_TIME_WHY_V1"||
+     data.model_or_sponsor_called!==false||data.publisher_first_publication_authenticated!==false||
+     !Array.isArray(data.evidence_needed)||!Array.isArray(data.excluded_sources))
+   throw Error("Response provenance contract mismatch");
+  render(data);
+  if(requestPack)renderInvestigation(report,requestPack);
+  $("removed").disabled=false;
+   $("status").textContent="Verified local source-pinned replay";
+ }catch(e){
+  if(revision!==generation)return;
+  clearView();
+  $("status").textContent="Replay unavailable";
+  if(requestPack){$("caseStatus").textContent="Imported case was refused or replay failed. No current conclusion.";$("caseQuestion").textContent="";}
+  $("claims").textContent="No current result. The previous replay was cleared.";
+  $("error").textContent=e.message;
+ }finally{
+  if(revision===generation)setBusy(false);
+ }
+}
+function sameCaseOutcome(first,second){
+ const signature=report=>JSON.stringify({
+  case_id:report.case_id,as_of_utc:report.why?.as_of_utc,
+  selected:report.why?.selected_claims,
+  after:report.experiment?.selected_claims_after
+ });
+ return signature(first)===signature(second);
+}
+function renderNightshiftOutcome(report){
+ const result=report.nightshift_local_proposal||{};
+ const output=$("nightshiftResult");output.replaceChildren();
+ output.append(node("p","nightshift-status","Nightshift result: "+(result.status||"UNKNOWN")));
+ if(result.proposal&&typeof result.proposal.explanation==="string"){
+  const target=result.proposal;
+  output.append(node("p","nightshift-facts","Bounded facts: "+target.claim_key+" · "+
+   target.before_value+" → "+target.after_value+" · sources "+target.source_ids.join(" + ")),
+   node("blockquote","nightshift-explanation",target.explanation));
+ }
+ if(result.status==="PROPOSAL_REJECTED_BY_DETERMINISTIC_CHECK"){
+  const change=report.experiment?.changed_claims?.find(item=>item.before&&item.after);
+  if(change){
+   const unit=change.after.unit||change.before.unit||"";
+   const label=value=>String(value)+(unit?" "+unit:"");
+   output.append(node("p","nightshift-facts","Deterministic summary: "+change.claim_key+
+    " changes from "+label(change.before.value)+" ("+change.before.source_id+") to "+
+    label(change.after.value)+" ("+change.after.source_id+") after the selected withdrawals."));
+  }
+  output.append(node("p","muted","The model proposal was rejected by a deterministic text-quality check; this summary uses the computed case."));
+ }
+ if(typeof result.routed_model==="string"){
+  output.append(node("p","muted","Runtime-reported route (not independently attested): "+result.routed_model));
+ }
+ if(result.rejection_code)output.append(node("p","muted","Proposal rejected: "+result.rejection_code));
+ output.append(node("p","muted","Deterministic verdict unchanged: "+
+  (report.nightshift_local_proposal?"yes":"unknown")+" · model called: "+Boolean(result.model_called)+
+  " · request attempted: "+Boolean(result.request_attempted)));
+}
+async function askLocalNightshift(){
+ if($("askLocalNightshift").disabled||!casePack||!lastInvestigation)return;
+ const revision=generation,current=lastInvestigation;
+ const body={case:casePack,as_of_utc:$("caseClock").value.trim(),
+  strict:$("mode").value==="strict",withdrawn_source_ids:[...withdrawals],
+  search_depth:Number($("searchDepth").value),confirm_local_nightshift:true};
+ nightshiftBusy=true;syncNightshiftControls(true);
+ $("nightshiftResult").replaceChildren(node("p","muted","Sending the selected claim facts to the local Runtime…"));
+ try{
+  const response=await fetch("/case-local-nightshift",{
+   method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)
+  });
+  if(!response.ok)throw Error();
+  const report=await response.json();
+  if(revision!==generation)return;
+  if(report.kind!=="EVIDENCETRAIL_OPEN_CASE_INVESTIGATION_V1"||
+     report.case_id!==casePack.case_id||report.trust_basis!=="OPERATOR_DECLARED_NOT_EXTERNALLY_VERIFIED"||
+     !sameCaseOutcome(current,report)||!report.nightshift_local_proposal||
+     (report.nightshift_local_proposal.model_called&&
+      report.nightshift_local_proposal.route_identity_independently_verified!==false))
+   throw Error();
+  renderNightshiftOutcome(report);
+ }catch{
+  if(revision===generation){
+   const output=$("nightshiftResult");output.replaceChildren(
+    node("p","nightshift-status","Local request failed or returned an unexpected deterministic case."),
+    node("p","muted","The existing deterministic result remains unchanged."));
+  }
+ }finally{
+  nightshiftBusy=false;
+  if(revision===generation)setBusy(false);
+ }
+}
+async function checkLocalNightshiftAvailability(){
+ try{
+  const response=await fetch("/health");if(!response.ok)throw Error();
+  const health=await response.json();localNightshiftEnabled=health.local_nightshift_enabled===true;
+  $("nightshiftCapability").textContent=localNightshiftEnabled?
+   "Enabled by this server's startup flag. The request remains off until you check the box and click the button.":
+   "Disabled. Start this loopback server with --enable-local-nightshift to make the explicit local option available.";
+ }catch{
+  localNightshiftEnabled=false;
+  $("nightshiftCapability").textContent="Local feature availability could not be checked; no request will be sent.";
+ }
+ syncNightshiftControls(false);
+}
+$("warehouseExample").addEventListener("click",async()=>{
+ const revision=beginCaseLoad();
+ try{const response=await fetch("/case-examples/warehouse");if(!response.ok)throw Error();await loadCase(await response.json(),revision);}
+ catch{failCaseLoad(revision);}
+});
+$("casefile").addEventListener("change",async()=>{
+ const revision=beginCaseLoad();
+ try{
+  const file=$("casefile").files[0];if(!file||file.size>60000)throw Error();
+  await loadCase(JSON.parse(await file.text()),revision);
+ }catch{failCaseLoad(revision);}
+});
+$("resetCase").addEventListener("click",()=>{
+ window.caseWorkbench?.reset();
+ ++generation;setBusy(false);
+ casePack=null;withdrawals=new Set();$("casefile").value="";setCaseControls(false);
+ $("caseStatus").textContent="Default: curated Milton replay. Imported pins check consistency, not source truth.";
+ $("mode").value="reported";run();
+});
+$("exportCase").addEventListener("click",async()=>{
+ try{
+  let pack=casePack;if(!pack){const response=await fetch("/case-examples/milton");if(!response.ok)throw Error();pack=await response.json();}
+  const url=URL.createObjectURL(new Blob([JSON.stringify(pack,null,2)],{type:"application/json"}));
+  const link=document.createElement("a");link.href=url;link.download="evidencetrail.case.json";
+  document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ }catch{$("error").textContent="Case download unavailable.";}
+});
+$("testJoint").addEventListener("click",()=>run());
+$("controls").addEventListener("submit",run);
+$("removed").addEventListener("change",showRemoval);
+$("confirmLocalNightshift").addEventListener("change",()=>syncNightshiftControls(false));
+$("askLocalNightshift").addEventListener("click",askLocalNightshift);
+checkLocalNightshiftAvailability();
+run();
+</script>
+<script src="/case-workbench.js"></script>
+</body>
+</html>
